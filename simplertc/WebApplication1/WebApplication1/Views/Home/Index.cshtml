@@ -2,18 +2,16 @@
     ViewBag.Title = "Wideokonferencja";
 }
 
-<h1 class="logo"><span>simple</span><span>WebRTC</span></h1>
-<h2>You can build cool stuff with WebRTC in five minutes.</h2>
-
-<h3 id="title">Start a room</h3>
+<h3 id="title">Utwórz pokój</h3>
 <form id="createRoom">
     <input id="sessionInput" />
-    <button disabled type="submit">Create it!</button>
+    <button disabled type="submit">Nowy pokój</button>
+    (Aby utworzyć nowy pokój należy używać połączenia HTTPS)
 </form>
 <p id="subTitle"></p>
 <div>
     <button id="screenShareButton"></button>
-    (https required for screensharing to work)
+    (W celu uruchomienia podglądu puplitu należy zmienić odpowiednie flagi w przeglądarce (Więcej info wkrótce))
 </div>
 <hr>
 <div class="videoContainer">
@@ -25,15 +23,7 @@
 <div id="remotes"></div>
 <hr>
 <div>
-    <h3>A note on connectivity issues</h3>
-    If you see black videos from peers or the connection state displayed ontop of those videos
-    either hangs in <i>Connecting to peer...</i> or changes to <i>Connection failed</i>, a direct peer-to-peer connection could not be established.
-    <br>
-    This typically means that a TURN server is required. This <a href="http://www.html5rocks.com/en/tutorials/webrtc/infrastructure/#after-signaling-using-ice-to-cope-with-nats-and-firewalls">tutorial</a> explains the problem.
-    You can check if those peers can connect each other on <a href="https://talky.io">talky.io</a> which runs a TURN server.
-</div>
-<div>
-    Want to know more about how some of these features work? Check the <a href="notsosimple.html">documentation</a>
+    Czat w budowie (prace trwają).
 </div>
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
 <script src="/Scripts/latest-v2.js"></script>
@@ -193,8 +183,8 @@
             // Since we use this twice we put it here
             function setRoom(name) {
                 document.querySelector('form').remove();
-                document.getElementById('title').innerText = 'Room: ' + name;
-                document.getElementById('subTitle').innerText =  'Link to join: ' + location.href;
+                document.getElementById('title').innerText = 'Pokój: ' + name;
+                document.getElementById('subTitle').innerText =  'Link do pokoju: ' + location.href;
                 $('body').addClass('active');
             }
 
@@ -220,7 +210,7 @@
 
             var button = document.getElementById('screenShareButton'),
                 setButton = function (bool) {
-                    button.innerText = bool ? 'share screen' : 'stop sharing';
+                    button.innerText = bool ? 'Udostępnij podgląd pulpitu' : 'Zatrzymaj udostępnianie podglądu pulpitu';
                 };
             if (!webrtc.capabilities.screenSharing) {
                 button.disabled = 'disabled';

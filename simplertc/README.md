@@ -1,3 +1,5 @@
 ## README ##
 
-Próba stworzenia webapliakcji z u¿yciem SimpleRTC
+Webapliakcja z u¿yciem SimpleRTC
+
+https://simplewebrtc.com/
