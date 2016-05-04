@@ -119,21 +119,21 @@
                         peer.pc.on('iceConnectionStateChange', function (event) {
                             switch (peer.pc.iceConnectionState) {
                             case 'checking':
-                                connstate.innerText = 'Connecting to peer...';
+                                connstate.innerText = 'Łączenie...';
                                 break;
                             case 'connected':
                             case 'completed': // on caller side
                                 $(vol).show();
-                                connstate.innerText = 'Connection established.';
+                                connstate.innerText = 'Połączenie ustanowione.';
                                 break;
                             case 'disconnected':
-                                connstate.innerText = 'Disconnected.';
+                                connstate.innerText = 'Rozłączono.';
                                 break;
                             case 'failed':
-                                connstate.innerText = 'Connection failed.';
+                                connstate.innerText = 'Błąd połączenia.';
                                 break;
                             case 'closed':
-                                connstate.innerText = 'Connection closed.';
+                                connstate.innerText = 'Połączenie zakończone.';
                                 break;
                             }
                         });
@@ -249,7 +249,7 @@
                 var peername = document.createElement('div');
                 peername.className = 'peerName';
                 peername.appendChild(document.createTextNode('Peer: ' + peer.id));
-                container.appendChild(peername);
+                //container.appendChild(peername);
 
                 // show a list of files received / sending
                 var filelist = document.createElement('ul');
@@ -318,22 +318,22 @@
                             + state.substr(1);
                         switch (state) {
                             case 'checking':
-                                connstate.innerText = 'Connecting to peer...';
+                                connstate.innerText = 'Łączenie...';
                                 break;
                             case 'connected':
                             case 'completed': // on caller side
-                                connstate.innerText = 'Connection established.';
+                                connstate.innerText = 'Połączenie ustanowione.';
                                 // enable file sending on connnect
                                 fileinput.removeAttribute('disabled');
                                 break;
                             case 'disconnected':
-                                connstate.innerText = 'Disconnected.';
+                                connstate.innerText = 'Rozłączono.';
                                 break;
                             case 'failed':
                                 // not handled here
                                 break;
                             case 'closed':
-                                connstate.innerText = 'Connection closed.';
+                                connstate.innerText = 'Połączenie zakończone.';
 
                                 // disable file sending
                                 fileinput.disabled = 'disabled';
@@ -375,7 +375,7 @@
                         var href = document.createElement('a');
                         href.href = URL.createObjectURL(file);
                         href.download = metadata.name;
-                        href.appendChild(document.createTextNode('download'));
+                        href.appendChild(document.createTextNode(' Pobierz'));
                         item.appendChild(href);
 
                         // close the channel
