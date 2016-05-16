@@ -23,6 +23,12 @@
 <div id="remotes"></div>
 <hr>
 <div>
+    <input type="button" id="name" value="Nick" />
+    <input type="button" id="sendmessage" value="Wyślij" />
+    <input type="hidden" id="displayname" />
+    <input type="text" id="message" />
+    <ul id="discussion"></ul>
+   
     Czat w budowie (prace trwają).
 </div>
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
@@ -43,7 +49,46 @@
                 detectSpeakingEvents: true,
                 autoAdjustMic: false
             });
+   
+            function display (name, message) {
+                // Html encode display name and message. 
+                var encodedName = $('<div />').text(name).html();
+                var encodedMsg = $('<div />').text(message).html();
+                // Add the message to the page. 
+                $('#discussion').append('<li><strong>' + encodedName
+                    + '</strong>:&nbsp;&nbsp;' + encodedMsg + '</li>');
+            };
 
+          
+
+            $('#sendmessage').click(function () {
+            
+                var d = $('#displayname').val()+"," + $('#message').val();
+                webrtc.sendDirectlyToAll('hark', 'chat', d);
+                display($('#displayname').val(), $('#message').val());
+               
+                // Clear text box and reset focus for next comment. 
+                $('#message').val('').focus();
+            });
+
+
+            webrtc.on('channelMessage', function (peer, label, data) {
+                // Only handle messages from your dataChannel
+                if (label !== 'hark') return;
+                else if (data.type == 'chat') {
+                    
+                    console.log('Received message: ' + data.payload + ' from ' + peer.id);
+                    var name = data.payload.substring(0, data.payload.indexOf(','));
+                    var message = data.payload.substring(data.payload.indexOf(',')+1,data.payload.length);
+                    display(name, message);
+                }
+            });
+            
+
+
+            $('#name').click(function () {
+                $('#displayname').val(prompt('Podaj nick:', ''));
+            });
             // when it's ready, join if we got a room from the URL
             webrtc.on('readyToCall', function () {
                 // you can name it anything
@@ -66,7 +111,7 @@
             // we did not get access to the camera
             webrtc.on('localMediaError', function (err) {
             });
-
+         
             // local screen obtained
             webrtc.on('localScreenAdded', function (video) {
                 video.onclick = function () {
