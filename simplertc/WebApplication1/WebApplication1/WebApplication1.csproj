@@ -137,6 +137,7 @@
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <None Include="Properties\PublishProfiles\testWebApp18042016 - Web Deploy.pubxml" />
+    <None Include="Properties\PublishProfiles\video-conferencept - Web Deploy.pubxml" />
     <None Include="Properties\PublishProfiles\WebApplication120160503054727 - Web Deploy.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
