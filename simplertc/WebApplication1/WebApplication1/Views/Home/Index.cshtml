@@ -274,7 +274,6 @@
                     webrtc.stopScreenShare();
                     setButton(true);
                 } else {
-                    console.log("Jakiś pojebany error");
                     webrtc.shareScreen(function (err) {
                         if (err) {
                             setButton(true);
