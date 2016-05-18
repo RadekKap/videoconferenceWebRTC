@@ -6,12 +6,14 @@
 <form id="createRoom">
     <input id="sessionInput" />
     <button disabled type="submit">Nowy pokój</button>
-    (Aby utworzyć nowy pokój należy używać połączenia HTTPS)
 </form>
 <p id="subTitle"></p>
 <div>
     <button id="screenShareButton"></button>
-    (W celu uruchomienia podglądu puplitu należy zmienić odpowiednie flagi w przeglądarce (Więcej info wkrótce))
+    <p><font color="red">Informacja: </font>W celu uruchomienia podglądu puplitu należy używać szyfrowanego połączenia (HTTPS) 
+    oraz zmienić odpowiednie ustawienia w przeglądarce. W przypadku Firefox należy w pasku 
+    adresu wpisać <i>about:config</i> i odnaleźć opcję <i>media.getusermedia.screensharing.allowed_domains</i>.
+    Należy ją zmodyfikować dopisując na końcu <i>ptkonferencje.azure.websites.net</i></p>
 </div>
 <hr>
 <div class="videoContainer">
