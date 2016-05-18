@@ -39,6 +39,7 @@
 
             // create our webrtc connection
             var webrtc = new SimpleWebRTC({
+                //url: 'http://localhost:8888/',
                 // the id/element dom element that will hold "our" video
                 localVideoEl: 'localVideo',
                 // the id/element dom element that will hold remote videos
@@ -258,7 +259,7 @@
                     button.innerText = bool ? 'Udostępnij podgląd pulpitu' : 'Zatrzymaj udostępnianie podglądu pulpitu';
                 };
             if (!webrtc.capabilities.screenSharing) {
-                button.disabled = 'disabled';
+                //button.disabled = 'disabled';
             }
             webrtc.on('localScreenRemoved', function () {
                 setButton(true);
@@ -271,6 +272,7 @@
                     webrtc.stopScreenShare();
                     setButton(true);
                 } else {
+                    console.log("Jakiś pojebany error");
                     webrtc.shareScreen(function (err) {
                         if (err) {
                             setButton(true);
