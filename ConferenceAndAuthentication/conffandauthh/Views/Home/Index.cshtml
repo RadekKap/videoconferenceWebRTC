@@ -1,0 +1,454 @@
+﻿
+
+
+@{
+    ViewBag.Title = "Wideoczat";
+}
+
+@if (Request.IsAuthenticated)
+{
+        <h3 id="title">Utwórz pokój</h3>
+        <form id="createRoom">
+            <input id="sessionInput" />
+            <button disabled type="submit">Nowy pokój</button>
+        </form>
+        <p id="subTitle"></p>
+        <div>
+            <button id="screenShareButton"></button>
+            <p>
+                <font color="red">Informacja: </font>W celu uruchomienia podglądu puplitu należy używać szyfrowanego połączenia (HTTPS)
+                oraz zmienić odpowiednie ustawienia w przeglądarce. W przypadku Firefox należy w pasku
+                adresu wpisać <i>about:config</i> i odnaleźć opcję <i>media.getusermedia.screensharing.allowed_domains</i>.
+                Należy ją zmodyfikować dopisując na końcu <i>ptkonferencje.azure.websites.net</i>
+            </p>
+        </div>
+        <hr>
+        <div class="videoContainer">
+            <video id="localVideo" style="height: 150px;" oncontextmenu="return false;"></video>
+            <meter id="localVolume" class="volume" min="-45" max="-20" high="-25" low="-40"></meter>
+        </div>
+        <div id="localScreenContainer" class="videoContainer">
+        </div>
+        <div id="remotes"></div>
+        <hr>
+
+        <div>
+            <textarea rows="4" cols="50" id="message"></textarea>
+            <input type="button" id="sendmessage" value="Wyślij" /><input type="button" id="name" value="Nick" />
+            <input type="hidden" id="displayname" />
+
+
+            <ul id="discussion"></ul>
+        </div>
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
+        <script src="/Scripts/latest-v2.js"></script>
+        <script>
+            // grab the room from the URL
+            var room = location.search && location.search.split('?')[1];
+
+            // create our webrtc connection
+            var webrtc = new SimpleWebRTC({
+                //url: 'http://localhost:8888/',
+                // the id/element dom element that will hold "our" video
+                localVideoEl: 'localVideo',
+                // the id/element dom element that will hold remote videos
+                remoteVideosEl: '',
+                // immediately ask for camera access
+                autoRequestMedia: true,
+                debug: false,
+                detectSpeakingEvents: true,
+                autoAdjustMic: false
+            });
+
+            function display (name, message) {
+                // Html encode display name and message.
+                var encodedName = $('<div />').text(name).html();
+                var encodedMsg = $('<div />').text(message).html();
+                // Add the message to the page.
+                $('#discussion').append('<li><strong>' + encodedName
+                    + '</strong>:&nbsp;&nbsp;' + encodedMsg + '</li>');
+            };
+
+
+
+            $('#sendmessage').click(function () {
+
+                var d = $('#displayname').val()+"," + $('#message').val();
+                webrtc.sendDirectlyToAll('hark', 'chat', d);
+                display($('#displayname').val(), $('#message').val());
+
+                // Clear text box and reset focus for next comment.
+                $('#message').val('').focus();
+            });
+
+
+            webrtc.on('channelMessage', function (peer, label, data) {
+                // Only handle messages from your dataChannel
+                if (label !== 'hark') return;
+                else if (data.type == 'chat') {
+
+                    console.log('Received message: ' + data.payload + ' from ' + peer.id);
+                    var name = data.payload.substring(0, data.payload.indexOf(','));
+                    var message = data.payload.substring(data.payload.indexOf(',')+1,data.payload.length);
+                    display(name, message);
+                }
+            });
+
+
+
+            $('#name').click(function () {
+                $('#displayname').val(prompt('Podaj nick:', ''));
+            });
+            // when it's ready, join if we got a room from the URL
+            webrtc.on('readyToCall', function () {
+                // you can name it anything
+                if (room) webrtc.joinRoom(room);
+            });
+
+            function showVolume(el, volume) {
+                if (!el) return;
+                if (volume < -45) volume = -45; // -45 to -20 is
+                if (volume > -20) volume = -20; // a good range
+                el.value = volume;
+            }
+
+            // we got access to the camera
+            webrtc.on('localStream', function (stream) {
+                var button = document.querySelector('form>button');
+                if (button) button.removeAttribute('disabled');
+                $('#localVolume').show();
+            });
+            // we did not get access to the camera
+            webrtc.on('localMediaError', function (err) {
+            });
+
+            // local screen obtained
+            webrtc.on('localScreenAdded', function (video) {
+                video.onclick = function () {
+                    video.style.width = video.videoWidth + 'px';
+                    video.style.height = video.videoHeight + 'px';
+                };
+                document.getElementById('localScreenContainer').appendChild(video);
+                $('#localScreenContainer').show();
+            });
+            // local screen removed
+            webrtc.on('localScreenRemoved', function (video) {
+                document.getElementById('localScreenContainer').removeChild(video);
+                $('#localScreenContainer').hide();
+            });
+
+            // a peer video has been added
+            webrtc.on('videoAdded', function (video, peer) {
+                console.log('video added', peer);
+                var remotes = document.getElementById('remotes');
+                if (remotes) {
+                    var container = document.createElement('div');
+                    container.className = 'videoContainer';
+                    container.id = 'container_' + webrtc.getDomId(peer);
+                    container.appendChild(video);
+
+                    // suppress contextmenu
+                    video.oncontextmenu = function () { return false; };
+
+                    // resize the video on click
+                    video.onclick = function () {
+                        container.style.width = video.videoWidth + 'px';
+                        container.style.height = video.videoHeight + 'px';
+                    };
+
+                    // show the remote volume
+                    var vol = document.createElement('meter');
+                    vol.id = 'volume_' + peer.id;
+                    vol.className = 'volume';
+                    vol.min = -45;
+                    vol.max = -20;
+                    vol.low = -40;
+                    vol.high = -25;
+                    container.appendChild(vol);
+
+                    // show the ice connection state
+                    if (peer && peer.pc) {
+                        var connstate = document.createElement('div');
+                        connstate.className = 'connectionstate';
+                        container.appendChild(connstate);
+                        peer.pc.on('iceConnectionStateChange', function (event) {
+                            switch (peer.pc.iceConnectionState) {
+                            case 'checking':
+                                connstate.innerText = 'Łączenie...';
+                                break;
+                            case 'connected':
+                            case 'completed': // on caller side
+                                $(vol).show();
+                                connstate.innerText = 'Połączenie ustanowione.';
+                                break;
+                            case 'disconnected':
+                                connstate.innerText = 'Rozłączono.';
+                                break;
+                            case 'failed':
+                                connstate.innerText = 'Błąd połączenia.';
+                                break;
+                            case 'closed':
+                                connstate.innerText = 'Połączenie zakończone.';
+                                break;
+                            }
+                        });
+                    }
+                    remotes.appendChild(container);
+                }
+            });
+            // a peer was removed
+            webrtc.on('videoRemoved', function (video, peer) {
+                console.log('video removed ', peer);
+                var remotes = document.getElementById('remotes');
+                var el = document.getElementById(peer ? 'container_' + webrtc.getDomId(peer) : 'localScreenContainer');
+                if (remotes && el) {
+                    remotes.removeChild(el);
+                }
+            });
+
+            // local volume has changed
+            webrtc.on('volumeChange', function (volume, treshold) {
+                showVolume(document.getElementById('localVolume'), volume);
+            });
+            // remote volume has changed
+            webrtc.on('remoteVolumeChange', function (peer, volume) {
+                showVolume(document.getElementById('volume_' + peer.id), volume);
+            });
+
+            // local p2p/ice failure
+            webrtc.on('iceFailed', function (peer) {
+                var connstate = document.querySelector('#container_' + webrtc.getDomId(peer) + ' .connectionstate');
+                console.log('local fail', connstate);
+                if (connstate) {
+                    connstate.innerText = 'Connection failed.';
+                    fileinput.disabled = 'disabled';
+                }
+            });
+
+            // remote p2p/ice failure
+            webrtc.on('connectivityError', function (peer) {
+                var connstate = document.querySelector('#container_' + webrtc.getDomId(peer) + ' .connectionstate');
+                console.log('remote fail', connstate);
+                if (connstate) {
+                    connstate.innerText = 'Connection failed.';
+                    fileinput.disabled = 'disabled';
+                }
+            });
+
+            // Since we use this twice we put it here
+            function setRoom(name) {
+                document.querySelector('form').remove();
+                document.getElementById('title').innerText = 'Pokój: ' + name;
+                document.getElementById('subTitle').innerText =  'Link do pokoju: ' + location.href;
+                $('body').addClass('active');
+            }
+
+            if (room) {
+                setRoom(room);
+            } else {
+                $('form').submit(function () {
+                    var val = $('#sessionInput').val().toLowerCase().replace(/\s/g, '-').replace(/[^A-Za-z0-9_\-]/g, '');
+                    webrtc.createRoom(val, function (err, name) {
+                        console.log(' create room cb', arguments);
+
+                        var newUrl = location.pathname + '?' + name;
+                        if (!err) {
+                            history.replaceState({foo: 'bar'}, null, newUrl);
+                            setRoom(name);
+                        } else {
+                            console.log(err);
+                        }
+                    });
+                    return false;
+                });
+            }
+
+            var button = document.getElementById('screenShareButton'),
+                setButton = function (bool) {
+                    button.innerText = bool ? 'Udostępnij podgląd pulpitu' : 'Zatrzymaj udostępnianie podglądu pulpitu';
+                };
+            if (!webrtc.capabilities.screenSharing) {
+                //button.disabled = 'disabled';
+            }
+            webrtc.on('localScreenRemoved', function () {
+                setButton(true);
+            });
+
+            setButton(true);
+
+            button.onclick = function () {
+                if (webrtc.getLocalScreen()) {
+                    webrtc.stopScreenShare();
+                    setButton(true);
+                } else {
+                    webrtc.shareScreen(function (err) {
+                        if (err) {
+                            setButton(true);
+                        } else {
+                            setButton(false);
+                        }
+                    });
+
+                }
+            };
+            // called when a peer is created
+            webrtc.on('createdPeer', function (peer) {
+                console.log('createdPeer', peer);
+                var remotes = document.getElementById('remotes');
+                if (!remotes) return;
+                var container = document.createElement('div');
+                container.className = 'peerContainer';
+                container.id = 'container_' + webrtc.getDomId(peer);
+
+                // pokaż id peer'a
+                var peername = document.createElement('div');
+                peername.className = 'peerName';
+                peername.appendChild(document.createTextNode('Peer: ' + peer.id));
+                //container.appendChild(peername);
+
+                // show a list of files received / sending
+                var filelist = document.createElement('ul');
+                filelist.className = 'fileList';
+                container.appendChild(filelist);
+
+                // show a file select form
+                var fileinput = document.createElement('input');
+                fileinput.type = 'file';
+
+                // send a file
+                fileinput.addEventListener('change', function () {
+                    fileinput.disabled = true;
+
+                    var file = fileinput.files[0];
+                    var sender = peer.sendFile(file);
+
+                    // create a file item
+                    var item = document.createElement('li');
+                    item.className = 'sending';
+
+                    // make a label
+                    var span = document.createElement('span');
+                    span.className = 'filename';
+                    span.appendChild(document.createTextNode(file.name));
+                    item.appendChild(span);
+
+                    span = document.createElement('span');
+                    span.appendChild(document.createTextNode(' ' + file.size + ' bytes'));
+                    item.appendChild(span);
+
+                    // create a progress element
+                    var sendProgress = document.createElement('progress');
+                    sendProgress.max = file.size;
+                    item.appendChild(sendProgress);
+
+                    // hook up send progress
+                    sender.on('progress', function (bytesSent) {
+                        sendProgress.value = bytesSent;
+                    });
+                    // sending done
+                    sender.on('sentFile', function () {
+                        item.appendChild(document.createTextNode(' Wysłano'));
+
+                        // we allow only one filetransfer at a time
+                        fileinput.removeAttribute('disabled');
+                    });
+                    // receiver has actually received the file
+                    sender.on('complete', function () {
+                        // safe to disconnect now
+                    });
+                    filelist.appendChild(item);
+                }, false);
+                fileinput.disabled = 'disabled';
+                container.appendChild(fileinput);
+
+                // show the ice connection state
+                if (peer && peer.pc) {
+                    var connstate = document.createElement('div');
+                    connstate.className = 'connectionstate';
+                    container.appendChild(connstate);
+                    peer.pc.on('iceConnectionStateChange', function (event) {
+                        var state = peer.pc.iceConnectionState;
+                        console.log('state', state);
+                        container.className = 'peerContainer p2p' + state.substr(0, 1).toUpperCase()
+                            + state.substr(1);
+                        switch (state) {
+                            case 'checking':
+                                connstate.innerText = 'Łączenie...';
+                                break;
+                            case 'connected':
+                            case 'completed': // on caller side
+                                connstate.innerText = 'Połączenie ustanowione.';
+                                // enable file sending on connnect
+                                fileinput.removeAttribute('disabled');
+                                break;
+                            case 'disconnected':
+                                connstate.innerText = 'Rozłączono.';
+                                break;
+                            case 'failed':
+                                // not handled here
+                                break;
+                            case 'closed':
+                                connstate.innerText = 'Połączenie zakończone.';
+
+                                // disable file sending
+                                fileinput.disabled = 'disabled';
+                                // FIXME: remove container, but when?
+                                break;
+                        }
+                    });
+                }
+                remotes.appendChild(container);
+
+                // receiving an incoming filetransfer
+                peer.on('fileTransfer', function (metadata, receiver) {
+                    console.log('incoming filetransfer', metadata);
+                    var item = document.createElement('li');
+                    item.className = 'receiving';
+
+                    // make a label
+                    var span = document.createElement('span');
+                    span.className = 'filename';
+                    span.appendChild(document.createTextNode(metadata.name));
+                    item.appendChild(span);
+
+                    span = document.createElement('span');
+                    span.appendChild(document.createTextNode(metadata.size + ' bytes'));
+                    item.appendChild(span);
+
+                    // create a progress element
+                    var receiveProgress = document.createElement('progress');
+                    receiveProgress.max = metadata.size;
+                    item.appendChild(receiveProgress);
+
+                    // hook up receive progress
+                    receiver.on('progress', function (bytesReceived) {
+                        receiveProgress.value = bytesReceived;
+                    });
+                    // get notified when file is done
+                    receiver.on('receivedFile', function (file, metadata) {
+                        console.log('received file', metadata.name, metadata.size);
+                        var href = document.createElement('a');
+                        href.href = URL.createObjectURL(file);
+                        href.download = metadata.name;
+                        href.appendChild(document.createTextNode(' Pobierz'));
+                        item.appendChild(href);
+
+                        // close the channel
+                        receiver.channel.close();
+                    });
+                    filelist.appendChild(item);
+                });
+            });
+        </script>
+
+        }
+        else
+        {
+<div class="jumbotron">
+    <h1>Wideo-Konferencje</h1>
+    <p class="lead">Aby korzystać z usług naszego serwisu musisz się zarejestrować lub zalogować na istniejące konto</p>
+    <p><a class="btn btn-default" href=@Url.Action("Register", "Account")>Rejestracja</a></p>
+    <p><a class="btn btn-default" href=@Url.Action("Login", "Account")>Zaloguj</a></p>
+</div>
+
+}
