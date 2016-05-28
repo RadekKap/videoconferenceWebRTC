@@ -17,6 +17,7 @@ namespace WebApplication1.Controllers
                 string url = Request.Url.AbsoluteUri;
                 string[] splitedUrl = url.Split('?');
                 string roomName = splitedUrl[1];
+                return View("Contact");
             }//try
             catch(IndexOutOfRangeException)
             {
