@@ -9,8 +9,9 @@
 {
         <h3 id="title">Utwórz pokój</h3>
         <form id="createRoom">
-            <input id="sessionInput" />
-            <button disabled type="submit">Nowy pokój</button>
+            Nazwa pokoju: <input id="sessionInput" /><br />
+            Hasło do pokoju: <input id="passwordInput" /><br />
+            <button disabled type="submit">Stwórz nowy pokój</button>
         </form>
         <p id="subTitle"></p>
         <div>
@@ -19,7 +20,7 @@
                 <font color="red">Informacja: </font>W celu uruchomienia podglądu puplitu należy używać szyfrowanego połączenia (HTTPS)
                 oraz zmienić odpowiednie ustawienia w przeglądarce. W przypadku Firefox należy w pasku
                 adresu wpisać <i>about:config</i> i odnaleźć opcję <i>media.getusermedia.screensharing.allowed_domains</i>.
-                Należy ją zmodyfikować dopisując na końcu <i>ptkonferencje.azure.websites.net</i>
+                Należy ją zmodyfikować dopisując na końcu <i>ptkonferencje.azurewebsites.net</i>
             </p>
         </div>
         <hr>
@@ -248,6 +249,8 @@
             } else {
                 $('form').submit(function () {
                     var val = $('#sessionInput').val().toLowerCase().replace(/\s/g, '-').replace(/[^A-Za-z0-9_\-]/g, '');
+                    var pass = $('#passwordInput').val();
+                    $.post('https://' + location.host + '/Home/createRoom', { name: val, password: pass });
                     webrtc.createRoom(val, function (err, name) {
                         console.log(' create room cb', arguments);
 

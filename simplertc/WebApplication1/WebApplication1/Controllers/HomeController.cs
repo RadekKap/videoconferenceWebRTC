@@ -11,6 +11,7 @@ namespace WebApplication1.Controllers
     public class HomeController : Controller
     {
         static string pass = "123";
+        static List<RoomCreateModel> rooms = new List<RoomCreateModel>();
 
         public ActionResult Index(string password)
         {
@@ -20,7 +21,7 @@ namespace WebApplication1.Controllers
                 string url = Request.Url.AbsoluteUri;
                 string[] splitedUrl = url.Split('?');
                 string roomName = splitedUrl[1];
-                if (password == pass)
+                if (checkPass(roomName, password))
                     return View();
 
                 ViewBag.roomName = roomName;
@@ -33,6 +34,22 @@ namespace WebApplication1.Controllers
             }
             
             return View();
+        }
+
+        private bool checkPass(string roomName, string password)
+        {
+            try
+            {
+                RoomCreateModel room = rooms.First(r => r.name == roomName && r.password == password);
+                if (room != null)
+                    return true;
+            }//try
+            catch(InvalidOperationException)
+            {
+                return false;
+            }//catch
+
+            return false;
         }
 
         public ActionResult About()
@@ -52,7 +69,7 @@ namespace WebApplication1.Controllers
         [HttpPost]
         public void createRoom(RoomCreateModel room)
         {
-            pass = room.password;
+            rooms.Add(room);
         }
     }
 }
