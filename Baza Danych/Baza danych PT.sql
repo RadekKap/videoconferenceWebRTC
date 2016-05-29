@@ -1,6 +1,4 @@
 -- usuwanie tabel (np. do celu wyczyszczenia bazy)
-IF OBJECT_ID('Rooms') IS NOT NULL
-DROP TABLE Rooms;
 IF OBJECT_ID('UsersInRoom') IS NOT NULL
 DROP TABLE UsersInRoom;
 IF OBJECT_ID('OldRooms') IS NOT NULL
@@ -11,6 +9,10 @@ IF OBJECT_ID('ChatHistory') IS NOT NULL
 DROP TABLE ChatHistory;
 IF OBJECT_ID('Friends') IS NOT NULL
 DROP TABLE Friends;
+IF OBJECT_ID('Rooms') IS NOT NULL
+DROP TABLE Rooms;
+IF OBJECT_ID('OldRooms') IS NOT NULL
+DROP TABLE OldRooms;
 
 -- tworzenie tabel
 
