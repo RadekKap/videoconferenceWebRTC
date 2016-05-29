@@ -17,7 +17,11 @@ namespace WebApplication1.Controllers
                 string url = Request.Url.AbsoluteUri;
                 string[] splitedUrl = url.Split('?');
                 string roomName = splitedUrl[1];
+                if (password == "123")
+                    return View();
+
                 ViewBag.roomName = roomName;
+                ViewBag.pass = password;
                 return View("RoomPassword");
             }//try
             catch(IndexOutOfRangeException)
