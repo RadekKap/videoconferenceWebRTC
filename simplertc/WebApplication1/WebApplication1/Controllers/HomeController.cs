@@ -4,11 +4,14 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Web;
 using System.Web.Mvc;
+using WebApplication1.Models;
 
 namespace WebApplication1.Controllers
 {
     public class HomeController : Controller
     {
+        static string pass = "123";
+
         public ActionResult Index(string password)
         {
             try
@@ -17,7 +20,7 @@ namespace WebApplication1.Controllers
                 string url = Request.Url.AbsoluteUri;
                 string[] splitedUrl = url.Split('?');
                 string roomName = splitedUrl[1];
-                if (password == "123")
+                if (password == pass)
                     return View();
 
                 ViewBag.roomName = roomName;
@@ -44,6 +47,12 @@ namespace WebApplication1.Controllers
             ViewBag.Message = "Temat: Wideokonferncje";
 
             return View();
+        }
+
+        [HttpPost]
+        public void createRoom(RoomCreateModel room)
+        {
+            pass = room.password;
         }
     }
 }

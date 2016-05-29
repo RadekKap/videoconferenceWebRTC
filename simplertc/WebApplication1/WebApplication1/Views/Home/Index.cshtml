@@ -4,8 +4,9 @@
 
 <h3 id="title">Utwórz pokój</h3>
 <form id="createRoom">
-    <input id="sessionInput" />
-    <button disabled type="submit">Nowy pokój</button>
+    Nazwa pokoju: <input id="sessionInput" /><br />
+    Hasło do pokoju: <input id="passwordInput" /><br />
+    <button disabled type="submit">Stwórz nowy pokój</button>
 </form>
 <p id="subTitle"></p>
 <div>
@@ -241,6 +242,10 @@
             } else {
                 $('form').submit(function () {
                     var val = $('#sessionInput').val().toLowerCase().replace(/\s/g, '-').replace(/[^A-Za-z0-9_\-]/g, '');
+                    var pass = $('#passwordInput').val();
+                    console.log("Hasło do pokoju: " + pass);
+                    $.post('http://'+location.host+'/Home/createRoom', { name: val, password: pass });
+                    console.log(location.host);
                     webrtc.createRoom(val, function (err, name) {
                         console.log(' create room cb', arguments);
 
