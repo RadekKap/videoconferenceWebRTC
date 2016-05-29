@@ -9,7 +9,7 @@ namespace WebApplication1.Controllers
 {
     public class HomeController : Controller
     {
-        public ActionResult Index()
+        public ActionResult Index(string password)
         {
             try
             {
@@ -17,7 +17,8 @@ namespace WebApplication1.Controllers
                 string url = Request.Url.AbsoluteUri;
                 string[] splitedUrl = url.Split('?');
                 string roomName = splitedUrl[1];
-                return View("Contact");
+                ViewBag.roomName = roomName;
+                return View("RoomPassword");
             }//try
             catch(IndexOutOfRangeException)
             {
