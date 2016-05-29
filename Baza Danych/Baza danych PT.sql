@@ -1,47 +1,68 @@
-create database PT
+-- usuwanie tabel (np. do celu wyczyszczenia bazy)
+IF OBJECT_ID('Rooms') IS NOT NULL
+DROP TABLE Rooms;
+IF OBJECT_ID('UsersInRoom') IS NOT NULL
+DROP TABLE UsersInRoom;
+IF OBJECT_ID('OldRooms') IS NOT NULL
+DROP TABLE OldRooms;
+IF OBJECT_ID('UsersInOldRoom') IS NOT NULL
+DROP TABLE UsersInOldRoom;
+IF OBJECT_ID('ChatHistory') IS NOT NULL
+DROP TABLE ChatHistory;
+IF OBJECT_ID('Friends') IS NOT NULL
+DROP TABLE Friends;
 
-use PT
+-- tworzenie tabel
 
--- zmiana kodowania na obs³uguj¹ce jêzyk polski 
-ALTER DATABASE [Mieszkanie studenckie] COLLATE Polish_CI_AS
+-- obecnie istniej¹ce pokoje
+Create table Rooms(
+	roomId int Primary Key Identity(1,1),
+	ownerId nvarchar(128) references AspNetUsers(Id),
+	creationDate date,
+	name nvarchar(30),
+	roomPassword nvarchar(30)
+);
 
+-- przynale¿noœæ u¿ytkownika do istniej¹cego pokoju (powi¹zanie)
+Create Table UsersInRoom(
+	roomId int references Rooms(roomId),
+	userId nvarchar(128) references AspNetUsers(Id),
+	Primary Key(roomId,userId)
+);
 
-Create Table Uzytkownicy(
-Id_uzytkownika int Primary Key Identity(1,1),
-Login nvarchar(30),
-Haslo  nvarchar(30));
+-- pokoje istniej¹ce w przesz³oœci
+Create table OldRooms(
+	oldRoomId Int Primary Key Identity(1,1),
+	ownerId nvarchar(128) references AspNetUsers(Id),
+	creationDate date
+);
 
-Create table Pokoje(
-Id_pokoju int Primary Key Identity(1,1),
-Id_wlasciciela int references Uzytkownicy(Id_uzytkownika),
-Data date,
-Nazwa nvarchar(30),
-Haslo nvarchar(30),
-Ilosc int );
+-- przynale¿noœæ u¿ytkownika do nieistniej¹cego ju¿ pokoju
+Create table UsersInOldRoom(
+	userId nvarchar(128) references  AspNetUsers(Id),
+	oldRoomId int references OldRooms(oldRoomId),
+	Primary Key (userId,oldRoomId)
+);
 
-Create Table Jest_w_pokoju(
-Id_pokoju int references Pokoje(Id_pokoju),
-Id_uzytkownika int references Uzytkownicy(Id_uzytkownika),
-Primary Key(Id_Pokoju,Id_uzytkownika));
+-- historia rozmów na czacie
+Create table ChatHistory( 
+	messageId int Primary Key Identity(1,1),
+	oldRoomId int references OldRooms(oldRoomId),
+	userId nvarchar(128) references AspNetUsers(Id),
+	content nvarchar(255)
+);
 
-Create table Nieaktywne_pokoje(
-Id_niektywnego Int Primary Key Identity(1,1),
-Id_wlasciciela int references Uzytkownicy(Id_uzytkownika),
-Data date,
-Ilosc int);
+-- znajomi
+Create table Friends (
+	firstUserId nvarchar(128) references AspNetUsers(Id),
+	secondUserId nvarchar(128) references AspNetUsers(Id),
+	Primary Key (firstUserId,secondUserId)
+);
 
-Create table By³_w_pokoju(
-Id_uzytkownika int references Uzytkownicy(Id_uzytkownika),
-Id_nieaktywnego int references Nieaktywne_pokoje(Id_niektywnego),
-Primary Key (Id_uzytkownika,Id_nieaktywnego));
-
-Create table Archiwum_rozmow
-( Id_archwium int Primary Key Identity(1,1),
-  Id_niektywnego int references Nieaktywne_pokoje(Id_niektywnego),
-  Id_uzytkownika int references Uzytkownicy(Id_uzytkownika),
-  Tresc nvarchar (255));
-
-  cREATE table Znajomi
-  (Id_uzytkownika1 int references Uzytkownicy(Id_uzytkownika),
-   Id_uzytkownika2 int references Uzytkownicy(Id_uzytkownika),
-   Primary Key (Id_uzytkownika1,Id_uzytkownika2));
+-- sprawdzanie poprawnoœci utworzenia tabel
+SELECT * FROM Rooms;
+SELECT * FROM UsersInRoom;
+SELECT * FROM OldRooms;
+SELECT * FROM UsersInOldRooms;
+SELECT * FROM ChatHistory;
+SELECT * FROM Friends;
