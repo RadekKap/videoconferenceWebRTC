@@ -11,6 +11,9 @@ IF OBJECT_ID('Rooms') IS NOT NULL
 DROP TABLE Rooms;
 IF OBJECT_ID('OldRooms') IS NOT NULL
 DROP TABLE OldRooms;
+IF OBJECT_ID('Invitation') IS NOT NULL
+DROP TABLE Invitation;
+
 
 -- tworzenie tabel
 
@@ -59,6 +62,13 @@ Create table Friends (
 	Primary Key (firstUserId,secondUserId)
 );
 
+Create table Invitation (
+	firstUserId nvarchar(128) references AspNetUsers(Id),
+	secondUserId nvarchar(128) references AspNetUsers(Id),
+	Primary Key (firstUserId,secondUserId)
+);
+
+
 -- sprawdzanie poprawnoœci utworzenia tabel
 SELECT * FROM Rooms;
 SELECT * FROM UsersInRoom;
@@ -66,3 +76,4 @@ SELECT * FROM OldRooms;
 SELECT * FROM UsersInOldRoom;
 SELECT * FROM ChatHistory;
 SELECT * FROM Friends;
+SELECT * FROM Invitation;
