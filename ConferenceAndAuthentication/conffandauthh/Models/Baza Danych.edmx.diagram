@@ -21,6 +21,13 @@
         <AssociationConnector Association="conferenceModel.FK__Rooms__ownerId__4C6B5938" />
         <AssociationConnector Association="conferenceModel.Friends1" />
         <AssociationConnector Association="conferenceModel.Invitation1" />
+        <EntityTypeShape EntityType="conferenceModel.C__MigrationHistory" Width="1.5" PointX="8.375" PointY="3.75" />
+        <EntityTypeShape EntityType="conferenceModel.AspNetRoles" Width="1.5" PointX="1.125" PointY="9.875" />
+        <EntityTypeShape EntityType="conferenceModel.AspNetUserClaims" Width="1.5" PointX="5.625" PointY="10.875" />
+        <EntityTypeShape EntityType="conferenceModel.AspNetUserLogins" Width="1.5" PointX="5.625" PointY="8.375" />
+        <AssociationConnector Association="conferenceModel.FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId" />
+        <AssociationConnector Association="conferenceModel.FK_dbo_AspNetUserLogins_dbo_AspNetUsers_UserId" />
+        <AssociationConnector Association="conferenceModel.AspNetUserRoles" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>
