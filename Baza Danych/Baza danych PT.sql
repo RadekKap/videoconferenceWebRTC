@@ -56,16 +56,16 @@ Create table ChatHistory(
 );
 
 -- znajomi
-Create table Friends (
+Create table Friends( 
+	Id_Friends nvarchar(128) Primary key,
 	firstUserId nvarchar(128) references AspNetUsers(Id),
-	secondUserId nvarchar(128) references AspNetUsers(Id),
-	Primary Key (firstUserId,secondUserId)
+	secondUserId nvarchar(128) references AspNetUsers(Id)
 );
 
 Create table Invitation (
+    Id_Invitation nvarchar(128) Primary key,
 	firstUserId nvarchar(128) references AspNetUsers(Id),
-	secondUserId nvarchar(128) references AspNetUsers(Id),
-	Primary Key (firstUserId,secondUserId)
+	secondUserId nvarchar(128) references AspNetUsers(Id)
 );
 
 
