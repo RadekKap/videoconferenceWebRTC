@@ -176,6 +176,9 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\AccountViewModels.cs" />
+    <Compile Include="Models\AspNetUsers.cs">
+      <DependentUpon>Baza Danych.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\Baza Danych.Context.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>

@@ -28,5 +28,6 @@ namespace conffandauthh.Models
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<UsersInRoom> UsersInRoom { get; set; }
+        public virtual AspNetUsers AspNetUsers { get; set; }
     }
 }
