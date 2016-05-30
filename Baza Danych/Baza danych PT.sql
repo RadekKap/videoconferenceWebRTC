@@ -1,8 +1,6 @@
 -- usuwanie tabel (np. do celu wyczyszczenia bazy)
 IF OBJECT_ID('UsersInRoom') IS NOT NULL
 DROP TABLE UsersInRoom;
-IF OBJECT_ID('OldRooms') IS NOT NULL
-DROP TABLE OldRooms;
 IF OBJECT_ID('UsersInOldRoom') IS NOT NULL
 DROP TABLE UsersInOldRoom;
 IF OBJECT_ID('ChatHistory') IS NOT NULL
@@ -65,6 +63,6 @@ Create table Friends (
 SELECT * FROM Rooms;
 SELECT * FROM UsersInRoom;
 SELECT * FROM OldRooms;
-SELECT * FROM UsersInOldRooms;
+SELECT * FROM UsersInOldRoom;
 SELECT * FROM ChatHistory;
 SELECT * FROM Friends;
