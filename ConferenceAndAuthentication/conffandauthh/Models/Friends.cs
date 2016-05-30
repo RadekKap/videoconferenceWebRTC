@@ -14,6 +14,7 @@ namespace conffandauthh.Models
     
     public partial class Friends
     {
+        public int Id_Friends { get; set; }
         public string firstUserId { get; set; }
         public string secondUserId { get; set; }
     }

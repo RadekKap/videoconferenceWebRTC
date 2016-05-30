@@ -26,16 +26,11 @@ namespace conffandauthh.Models
         }
     
         public virtual DbSet<ChatHistory> ChatHistory { get; set; }
-        public virtual DbSet<Friends> Friends { get; set; }
-        public virtual DbSet<Invitation> Invitation { get; set; }
         public virtual DbSet<OldRooms> OldRooms { get; set; }
         public virtual DbSet<Rooms> Rooms { get; set; }
         public virtual DbSet<UsersInOldRoom> UsersInOldRoom { get; set; }
         public virtual DbSet<UsersInRoom> UsersInRoom { get; set; }
-        public virtual DbSet<AspNetUsers> AspNetUsers { get; set; }
-        public virtual DbSet<C__MigrationHistory> C__MigrationHistory { get; set; }
-        public virtual DbSet<AspNetRoles> AspNetRoles { get; set; }
-        public virtual DbSet<AspNetUserClaims> AspNetUserClaims { get; set; }
-        public virtual DbSet<AspNetUserLogins> AspNetUserLogins { get; set; }
+        public virtual DbSet<Friends> Friends { get; set; }
+        public virtual DbSet<Invitation> Invitation { get; set; }
     }
 }

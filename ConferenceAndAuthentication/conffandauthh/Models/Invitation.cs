@@ -14,6 +14,7 @@ namespace conffandauthh.Models
     
     public partial class Invitation
     {
+        public int Id_Invitation { get; set; }
         public string firstUserId { get; set; }
         public string secondUserId { get; set; }
     }

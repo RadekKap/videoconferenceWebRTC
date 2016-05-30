@@ -178,18 +178,6 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\AccountViewModels.cs" />
-    <Compile Include="Models\AspNetRoles.cs">
-      <DependentUpon>Baza Danych.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\AspNetUserClaims.cs">
-      <DependentUpon>Baza Danych.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\AspNetUserLogins.cs">
-      <DependentUpon>Baza Danych.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\AspNetUsers.cs">
-      <DependentUpon>Baza Danych.tt</DependentUpon>
-    </Compile>
     <Compile Include="Models\Baza Danych.Context.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -206,9 +194,6 @@
       <DependentUpon>Baza Danych.edmx</DependentUpon>
     </Compile>
     <Compile Include="Models\ChatHistory.cs">
-      <DependentUpon>Baza Danych.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\C__MigrationHistory.cs">
       <DependentUpon>Baza Danych.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Friends.cs">
