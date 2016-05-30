@@ -17,11 +17,14 @@ namespace conffandauthh.Controllers
         {
             ApplicationUser user = getUser();
             try
-            {  ViewBag.Nick = user.Email.ToString();
-            }catch(NullReferenceException)
+            {
+                ViewBag.Nick = user.Email.ToString();
+            }
+            catch (NullReferenceException)
             {
 
             }
+            
 
             try
             {
