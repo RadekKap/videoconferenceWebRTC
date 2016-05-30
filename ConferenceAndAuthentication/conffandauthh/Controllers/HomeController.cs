@@ -7,12 +7,22 @@ using System.Web.Mvc;
 
 namespace conffandauthh.Controllers
 {
-    public class HomeController : Controller
+    public class HomeController : MainController
     {
         static List<RoomCreateModel> rooms = new List<RoomCreateModel>();
 
+        conferenceEntities2 db = new conferenceEntities2();
+
         public ActionResult Index(string password)
         {
+            ApplicationUser user = getUser();
+            try
+            {  ViewBag.Nick = user.Email.ToString();
+            }catch(NullReferenceException)
+            {
+
+            }
+
             try
             {
                 //sprawdzanie URL, jeśli nie rzuci wyjątku to znaczy, że użytkownik wszedł do pokoju
@@ -24,6 +34,7 @@ namespace conffandauthh.Controllers
 
                 ViewBag.roomName = roomName;
                 ViewBag.pass = password;
+                ViewBag.Nick = user.Email.ToString();
                 return View("RoomPassword");
             }//try
             catch (IndexOutOfRangeException)
