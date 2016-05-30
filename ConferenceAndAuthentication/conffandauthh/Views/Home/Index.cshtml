@@ -8,15 +8,33 @@
 @if (Request.IsAuthenticated)
 {
         <h3 id="title">Utwórz pokój</h3>
+        <br />
         <form id="createRoom">
-            Nazwa pokoju: <input id="sessionInput" /><br />
-            Hasło do pokoju: <input id="passwordInput" /><br />
-            <button disabled type="submit">Stwórz nowy pokój</button>
+            <div role ="form" class="form-inline">
+                <div class="form-group">
+                    <p class="lead text-center">  Nazwa pokoju:     </p>
+                </div>
+                <div class="form-group">
+                    <input id="sessionInput" />             
+                </div>
+            </div>
+            <br />
+            <div role="form" class="form-inline">
+                <div class="form-group ">
+                    <p class="lead">  Hasło do pokoju:   </p>
+                </div>
+                <div class="form-group">
+                    <input id="passwordInput" />
+                </div>
+            </div>
+             <br />
+                <button class="btn btn-success " disabled type="submit">Stwórz nowy pokój</button>
         </form>
         <p id="subTitle"></p>
         <div>
-            <button id="screenShareButton"></button>
-            <p>
+            <button class="btn btn-default" id="screenShareButton"></button>
+            <br /><br />
+            <p class="lead">
                 <font color="red">Informacja: </font>W celu uruchomienia podglądu puplitu należy używać szyfrowanego połączenia (HTTPS)
                 oraz zmienić odpowiednie ustawienia w przeglądarce. W przypadku Firefox należy w pasku
                 adresu wpisać <i>about:config</i> i odnaleźć opcję <i>media.getusermedia.screensharing.allowed_domains</i>.
@@ -35,7 +53,7 @@
 
         <div>
             <textarea rows="4" cols="50" id="message"></textarea>
-            <input type="button" id="sendmessage" value="Wyślij" /><input type="button" id="name" value="Nick" />
+            <input type="button" class="btn btn-success" id="sendmessage" value="Wyślij" /><input type="button" class="btn btn-info" id="name" value="Nick" />
             <input type="hidden" id="displayname" />
 
 
