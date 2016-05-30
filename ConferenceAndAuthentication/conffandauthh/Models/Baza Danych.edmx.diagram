@@ -15,6 +15,12 @@
         <AssociationConnector Association="conferenceModel.FK__ChatHisto__oldRo__59C55456" ManuallyRouted="false" />
         <AssociationConnector Association="conferenceModel.FK__UsersInOl__oldRo__56E8E7AB" ManuallyRouted="false" />
         <AssociationConnector Association="conferenceModel.FK__UsersInRo__roomI__4F47C5E3" ManuallyRouted="false" />
+        <EntityTypeShape EntityType="conferenceModel.AspNetUsers" Width="1.5" PointX="3.375" PointY="8" />
+        <AssociationConnector Association="conferenceModel.FK__ChatHisto__userI__5AB9788F" />
+        <AssociationConnector Association="conferenceModel.FK__OldRooms__ownerI__531856C7" />
+        <AssociationConnector Association="conferenceModel.FK__Rooms__ownerId__4C6B5938" />
+        <AssociationConnector Association="conferenceModel.Friends1" />
+        <AssociationConnector Association="conferenceModel.Invitation1" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

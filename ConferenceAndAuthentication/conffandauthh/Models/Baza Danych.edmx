@@ -4,7 +4,24 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-      <Schema Namespace="conferenceModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012.Azure" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+    <Schema Namespace="conferenceModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012.Azure" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="AspNetUsers">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="Email" Type="nvarchar" MaxLength="256" />
+          <Property Name="EmailConfirmed" Type="bit" Nullable="false" />
+          <Property Name="PasswordHash" Type="nvarchar(max)" />
+          <Property Name="SecurityStamp" Type="nvarchar(max)" />
+          <Property Name="PhoneNumber" Type="nvarchar(max)" />
+          <Property Name="PhoneNumberConfirmed" Type="bit" Nullable="false" />
+          <Property Name="TwoFactorEnabled" Type="bit" Nullable="false" />
+          <Property Name="LockoutEndDateUtc" Type="datetime" />
+          <Property Name="LockoutEnabled" Type="bit" Nullable="false" />
+          <Property Name="AccessFailedCount" Type="int" Nullable="false" />
+          <Property Name="UserName" Type="nvarchar" MaxLength="256" Nullable="false" />
+        </EntityType>
         <EntityType Name="ChatHistory">
           <Key>
             <PropertyRef Name="messageId" />
@@ -76,6 +93,90 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK__ChatHisto__userI__5AB9788F">
+          <End Role="AspNetUsers" Type="Self.AspNetUsers" Multiplicity="0..1" />
+          <End Role="ChatHistory" Type="Self.ChatHistory" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AspNetUsers">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ChatHistory">
+              <PropertyRef Name="userId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Friends__firstUs__5D95E53A">
+          <End Role="AspNetUsers" Type="Self.AspNetUsers" Multiplicity="1" />
+          <End Role="Friends" Type="Self.Friends" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AspNetUsers">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Friends">
+              <PropertyRef Name="firstUserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Friends__secondU__5E8A0973">
+          <End Role="AspNetUsers" Type="Self.AspNetUsers" Multiplicity="1" />
+          <End Role="Friends" Type="Self.Friends" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AspNetUsers">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Friends">
+              <PropertyRef Name="secondUserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Invitatio__first__6166761E">
+          <End Role="AspNetUsers" Type="Self.AspNetUsers" Multiplicity="1" />
+          <End Role="Invitation" Type="Self.Invitation" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AspNetUsers">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Invitation">
+              <PropertyRef Name="firstUserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Invitatio__secon__625A9A57">
+          <End Role="AspNetUsers" Type="Self.AspNetUsers" Multiplicity="1" />
+          <End Role="Invitation" Type="Self.Invitation" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AspNetUsers">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Invitation">
+              <PropertyRef Name="secondUserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__OldRooms__ownerI__531856C7">
+          <End Role="AspNetUsers" Type="Self.AspNetUsers" Multiplicity="0..1" />
+          <End Role="OldRooms" Type="Self.OldRooms" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AspNetUsers">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="OldRooms">
+              <PropertyRef Name="ownerId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Rooms__ownerId__4C6B5938">
+          <End Role="AspNetUsers" Type="Self.AspNetUsers" Multiplicity="0..1" />
+          <End Role="Rooms" Type="Self.Rooms" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AspNetUsers">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Rooms">
+              <PropertyRef Name="ownerId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK__UsersInOl__oldRo__56E8E7AB">
           <End Role="OldRooms" Type="Self.OldRooms" Multiplicity="1" />
           <End Role="UsersInOldRoom" Type="Self.UsersInOldRoom" Multiplicity="*" />
@@ -85,6 +186,18 @@
             </Principal>
             <Dependent Role="UsersInOldRoom">
               <PropertyRef Name="oldRoomId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__UsersInOl__userI__55F4C372">
+          <End Role="AspNetUsers" Type="Self.AspNetUsers" Multiplicity="1" />
+          <End Role="UsersInOldRoom" Type="Self.UsersInOldRoom" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AspNetUsers">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="UsersInOldRoom">
+              <PropertyRef Name="userId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -100,7 +213,20 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK__UsersInRo__userI__503BEA1C">
+          <End Role="AspNetUsers" Type="Self.AspNetUsers" Multiplicity="1" />
+          <End Role="UsersInRoom" Type="Self.UsersInRoom" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AspNetUsers">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="UsersInRoom">
+              <PropertyRef Name="userId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <EntityContainer Name="conferenceModelStoreContainer">
+          <EntitySet Name="AspNetUsers" EntityType="Self.AspNetUsers" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ChatHistory" EntityType="Self.ChatHistory" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Friends" EntityType="Self.Friends" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Invitation" EntityType="Self.Invitation" Schema="dbo" store:Type="Tables" />
@@ -112,17 +238,52 @@
             <End Role="OldRooms" EntitySet="OldRooms" />
             <End Role="ChatHistory" EntitySet="ChatHistory" />
           </AssociationSet>
+          <AssociationSet Name="FK__ChatHisto__userI__5AB9788F" Association="Self.FK__ChatHisto__userI__5AB9788F">
+            <End Role="AspNetUsers" EntitySet="AspNetUsers" />
+            <End Role="ChatHistory" EntitySet="ChatHistory" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Friends__firstUs__5D95E53A" Association="Self.FK__Friends__firstUs__5D95E53A">
+            <End Role="AspNetUsers" EntitySet="AspNetUsers" />
+            <End Role="Friends" EntitySet="Friends" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Friends__secondU__5E8A0973" Association="Self.FK__Friends__secondU__5E8A0973">
+            <End Role="AspNetUsers" EntitySet="AspNetUsers" />
+            <End Role="Friends" EntitySet="Friends" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Invitatio__first__6166761E" Association="Self.FK__Invitatio__first__6166761E">
+            <End Role="AspNetUsers" EntitySet="AspNetUsers" />
+            <End Role="Invitation" EntitySet="Invitation" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Invitatio__secon__625A9A57" Association="Self.FK__Invitatio__secon__625A9A57">
+            <End Role="AspNetUsers" EntitySet="AspNetUsers" />
+            <End Role="Invitation" EntitySet="Invitation" />
+          </AssociationSet>
+          <AssociationSet Name="FK__OldRooms__ownerI__531856C7" Association="Self.FK__OldRooms__ownerI__531856C7">
+            <End Role="AspNetUsers" EntitySet="AspNetUsers" />
+            <End Role="OldRooms" EntitySet="OldRooms" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Rooms__ownerId__4C6B5938" Association="Self.FK__Rooms__ownerId__4C6B5938">
+            <End Role="AspNetUsers" EntitySet="AspNetUsers" />
+            <End Role="Rooms" EntitySet="Rooms" />
+          </AssociationSet>
           <AssociationSet Name="FK__UsersInOl__oldRo__56E8E7AB" Association="Self.FK__UsersInOl__oldRo__56E8E7AB">
             <End Role="OldRooms" EntitySet="OldRooms" />
+            <End Role="UsersInOldRoom" EntitySet="UsersInOldRoom" />
+          </AssociationSet>
+          <AssociationSet Name="FK__UsersInOl__userI__55F4C372" Association="Self.FK__UsersInOl__userI__55F4C372">
+            <End Role="AspNetUsers" EntitySet="AspNetUsers" />
             <End Role="UsersInOldRoom" EntitySet="UsersInOldRoom" />
           </AssociationSet>
           <AssociationSet Name="FK__UsersInRo__roomI__4F47C5E3" Association="Self.FK__UsersInRo__roomI__4F47C5E3">
             <End Role="Rooms" EntitySet="Rooms" />
             <End Role="UsersInRoom" EntitySet="UsersInRoom" />
           </AssociationSet>
+          <AssociationSet Name="FK__UsersInRo__userI__503BEA1C" Association="Self.FK__UsersInRo__userI__503BEA1C">
+            <End Role="AspNetUsers" EntitySet="AspNetUsers" />
+            <End Role="UsersInRoom" EntitySet="UsersInRoom" />
+          </AssociationSet>
         </EntityContainer>
-      </Schema>
-    </edmx:StorageModels>
+      </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="conferenceModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
@@ -135,6 +296,7 @@
           <Property Name="userId" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
           <Property Name="content" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="OldRooms" Relationship="Self.FK__ChatHisto__oldRo__59C55456" FromRole="ChatHistory" ToRole="OldRooms" />
+          <NavigationProperty Name="AspNetUsers" Relationship="conferenceModel.FK__ChatHisto__userI__5AB9788F" FromRole="ChatHistory" ToRole="AspNetUsers" />
         </EntityType>
         <EntityType Name="Friends">
           <Key>
@@ -161,6 +323,7 @@
           <Property Name="creationDate" Type="DateTime" Precision="0" />
           <NavigationProperty Name="ChatHistory" Relationship="Self.FK__ChatHisto__oldRo__59C55456" FromRole="OldRooms" ToRole="ChatHistory" />
           <NavigationProperty Name="UsersInOldRoom" Relationship="Self.FK__UsersInOl__oldRo__56E8E7AB" FromRole="OldRooms" ToRole="UsersInOldRoom" />
+          <NavigationProperty Name="AspNetUsers" Relationship="conferenceModel.FK__OldRooms__ownerI__531856C7" FromRole="OldRooms" ToRole="AspNetUsers" />
         </EntityType>
         <EntityType Name="Rooms">
           <Key>
@@ -172,6 +335,7 @@
           <Property Name="name" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
           <Property Name="roomPassword" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="UsersInRoom" Relationship="Self.FK__UsersInRo__roomI__4F47C5E3" FromRole="Rooms" ToRole="UsersInRoom" />
+          <NavigationProperty Name="AspNetUsers" Relationship="conferenceModel.FK__Rooms__ownerId__4C6B5938" FromRole="Rooms" ToRole="AspNetUsers" />
         </EntityType>
         <EntityType Name="UsersInOldRoom">
           <Key>
@@ -247,7 +411,96 @@
             <End Role="Rooms" EntitySet="Rooms" />
             <End Role="UsersInRoom" EntitySet="UsersInRoom" />
           </AssociationSet>
+          <EntitySet Name="AspNetUsers" EntityType="conferenceModel.AspNetUsers" />
+          <AssociationSet Name="FK__ChatHisto__userI__5AB9788F" Association="conferenceModel.FK__ChatHisto__userI__5AB9788F">
+            <End Role="AspNetUsers" EntitySet="AspNetUsers" />
+            <End Role="ChatHistory" EntitySet="ChatHistory" />
+          </AssociationSet>
+          <AssociationSet Name="FK__OldRooms__ownerI__531856C7" Association="conferenceModel.FK__OldRooms__ownerI__531856C7">
+            <End Role="AspNetUsers" EntitySet="AspNetUsers" />
+            <End Role="OldRooms" EntitySet="OldRooms" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Rooms__ownerId__4C6B5938" Association="conferenceModel.FK__Rooms__ownerId__4C6B5938">
+            <End Role="AspNetUsers" EntitySet="AspNetUsers" />
+            <End Role="Rooms" EntitySet="Rooms" />
+          </AssociationSet>
+          <AssociationSet Name="Friends1" Association="conferenceModel.Friends1">
+            <End Role="AspNetUsers" EntitySet="AspNetUsers" />
+            <End Role="AspNetUsers1" EntitySet="AspNetUsers" />
+          </AssociationSet>
+          <AssociationSet Name="Invitation1" Association="conferenceModel.Invitation1">
+            <End Role="AspNetUsers" EntitySet="AspNetUsers" />
+            <End Role="AspNetUsers1" EntitySet="AspNetUsers" />
+          </AssociationSet>
         </EntityContainer>
+        <EntityType Name="AspNetUsers">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="Email" Type="String" MaxLength="256" FixedLength="false" Unicode="true" />
+          <Property Name="EmailConfirmed" Type="Boolean" Nullable="false" />
+          <Property Name="PasswordHash" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="SecurityStamp" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="PhoneNumber" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="PhoneNumberConfirmed" Type="Boolean" Nullable="false" />
+          <Property Name="TwoFactorEnabled" Type="Boolean" Nullable="false" />
+          <Property Name="LockoutEndDateUtc" Type="DateTime" Precision="3" />
+          <Property Name="LockoutEnabled" Type="Boolean" Nullable="false" />
+          <Property Name="AccessFailedCount" Type="Int32" Nullable="false" />
+          <Property Name="UserName" Type="String" Nullable="false" MaxLength="256" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="ChatHistory" Relationship="conferenceModel.FK__ChatHisto__userI__5AB9788F" FromRole="AspNetUsers" ToRole="ChatHistory" />
+          <NavigationProperty Name="OldRooms" Relationship="conferenceModel.FK__OldRooms__ownerI__531856C7" FromRole="AspNetUsers" ToRole="OldRooms" />
+          <NavigationProperty Name="Rooms" Relationship="conferenceModel.FK__Rooms__ownerId__4C6B5938" FromRole="AspNetUsers" ToRole="Rooms" />
+          <NavigationProperty Name="AspNetUsers1" Relationship="conferenceModel.Friends1" FromRole="AspNetUsers" ToRole="AspNetUsers1" />
+          <NavigationProperty Name="AspNetUsers2" Relationship="conferenceModel.Friends1" FromRole="AspNetUsers1" ToRole="AspNetUsers" />
+          <NavigationProperty Name="AspNetUsers11" Relationship="conferenceModel.Invitation1" FromRole="AspNetUsers" ToRole="AspNetUsers1" />
+          <NavigationProperty Name="AspNetUsers3" Relationship="conferenceModel.Invitation1" FromRole="AspNetUsers1" ToRole="AspNetUsers" />
+        </EntityType>
+        <Association Name="FK__ChatHisto__userI__5AB9788F">
+          <End Type="conferenceModel.AspNetUsers" Role="AspNetUsers" Multiplicity="0..1" />
+          <End Type="conferenceModel.ChatHistory" Role="ChatHistory" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AspNetUsers">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ChatHistory">
+              <PropertyRef Name="userId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__OldRooms__ownerI__531856C7">
+          <End Type="conferenceModel.AspNetUsers" Role="AspNetUsers" Multiplicity="0..1" />
+          <End Type="conferenceModel.OldRooms" Role="OldRooms" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AspNetUsers">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="OldRooms">
+              <PropertyRef Name="ownerId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Rooms__ownerId__4C6B5938">
+          <End Type="conferenceModel.AspNetUsers" Role="AspNetUsers" Multiplicity="0..1" />
+          <End Type="conferenceModel.Rooms" Role="Rooms" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AspNetUsers">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Rooms">
+              <PropertyRef Name="ownerId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="Friends1">
+          <End Type="conferenceModel.AspNetUsers" Role="AspNetUsers" Multiplicity="*" />
+          <End Type="conferenceModel.AspNetUsers" Role="AspNetUsers1" Multiplicity="*" />
+        </Association>
+        <Association Name="Invitation1">
+          <End Type="conferenceModel.AspNetUsers" Role="AspNetUsers" Multiplicity="*" />
+          <End Type="conferenceModel.AspNetUsers" Role="AspNetUsers1" Multiplicity="*" />
+        </Association>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -316,6 +569,40 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <EntitySetMapping Name="AspNetUsers">
+            <EntityTypeMapping TypeName="conferenceModel.AspNetUsers">
+              <MappingFragment StoreEntitySet="AspNetUsers">
+                <ScalarProperty Name="UserName" ColumnName="UserName" />
+                <ScalarProperty Name="AccessFailedCount" ColumnName="AccessFailedCount" />
+                <ScalarProperty Name="LockoutEnabled" ColumnName="LockoutEnabled" />
+                <ScalarProperty Name="LockoutEndDateUtc" ColumnName="LockoutEndDateUtc" />
+                <ScalarProperty Name="TwoFactorEnabled" ColumnName="TwoFactorEnabled" />
+                <ScalarProperty Name="PhoneNumberConfirmed" ColumnName="PhoneNumberConfirmed" />
+                <ScalarProperty Name="PhoneNumber" ColumnName="PhoneNumber" />
+                <ScalarProperty Name="SecurityStamp" ColumnName="SecurityStamp" />
+                <ScalarProperty Name="PasswordHash" ColumnName="PasswordHash" />
+                <ScalarProperty Name="EmailConfirmed" ColumnName="EmailConfirmed" />
+                <ScalarProperty Name="Email" ColumnName="Email" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <AssociationSetMapping Name="Friends1" TypeName="conferenceModel.Friends1" StoreEntitySet="Friends">
+            <EndProperty Name="AspNetUsers1">
+              <ScalarProperty Name="Id" ColumnName="secondUserId" />
+            </EndProperty>
+            <EndProperty Name="AspNetUsers">
+              <ScalarProperty Name="Id" ColumnName="firstUserId" />
+            </EndProperty>
+          </AssociationSetMapping>
+          <AssociationSetMapping Name="Invitation1" TypeName="conferenceModel.Invitation1" StoreEntitySet="Invitation">
+            <EndProperty Name="AspNetUsers1">
+              <ScalarProperty Name="Id" ColumnName="secondUserId" />
+            </EndProperty>
+            <EndProperty Name="AspNetUsers">
+              <ScalarProperty Name="Id" ColumnName="firstUserId" />
+            </EndProperty>
+          </AssociationSetMapping>
         </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>
