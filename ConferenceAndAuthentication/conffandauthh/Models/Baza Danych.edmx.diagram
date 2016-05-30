@@ -4,10 +4,8 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="5eb118d5a43f414cb00778a5b425d1f3" Name="Diagram1">
+      <Diagram DiagramId="5eb118d5a43f414cb00778a5b425d1f3" Name="Diagram1" ZoomLevel="81">
         <EntityTypeShape EntityType="conferenceModel.ChatHistory" Width="1.5" PointX="3" PointY="1" IsExpanded="true" />
-        <EntityTypeShape EntityType="conferenceModel.Friends" Width="1.5" PointX="5.75" PointY="4.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="conferenceModel.Invitation" Width="1.5" PointX="0.75" PointY="6.75" IsExpanded="true" />
         <EntityTypeShape EntityType="conferenceModel.OldRooms" Width="1.5" PointX="0.75" PointY="2.25" IsExpanded="true" />
         <EntityTypeShape EntityType="conferenceModel.Rooms" Width="1.5" PointX="5.75" PointY="0.875" IsExpanded="true" />
         <EntityTypeShape EntityType="conferenceModel.UsersInOldRoom" Width="1.5" PointX="3" PointY="3.75" IsExpanded="true" />
@@ -15,19 +13,8 @@
         <AssociationConnector Association="conferenceModel.FK__ChatHisto__oldRo__59C55456" ManuallyRouted="false" />
         <AssociationConnector Association="conferenceModel.FK__UsersInOl__oldRo__56E8E7AB" ManuallyRouted="false" />
         <AssociationConnector Association="conferenceModel.FK__UsersInRo__roomI__4F47C5E3" ManuallyRouted="false" />
-        <EntityTypeShape EntityType="conferenceModel.AspNetUsers" Width="1.5" PointX="3.375" PointY="8" />
-        <AssociationConnector Association="conferenceModel.FK__ChatHisto__userI__5AB9788F" />
-        <AssociationConnector Association="conferenceModel.FK__OldRooms__ownerI__531856C7" />
-        <AssociationConnector Association="conferenceModel.FK__Rooms__ownerId__4C6B5938" />
-        <AssociationConnector Association="conferenceModel.Friends1" />
-        <AssociationConnector Association="conferenceModel.Invitation1" />
-        <EntityTypeShape EntityType="conferenceModel.C__MigrationHistory" Width="1.5" PointX="8.375" PointY="3.75" />
-        <EntityTypeShape EntityType="conferenceModel.AspNetRoles" Width="1.5" PointX="1.125" PointY="9.875" />
-        <EntityTypeShape EntityType="conferenceModel.AspNetUserClaims" Width="1.5" PointX="5.625" PointY="10.875" />
-        <EntityTypeShape EntityType="conferenceModel.AspNetUserLogins" Width="1.5" PointX="5.625" PointY="8.375" />
-        <AssociationConnector Association="conferenceModel.FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId" />
-        <AssociationConnector Association="conferenceModel.FK_dbo_AspNetUserLogins_dbo_AspNetUsers_UserId" />
-        <AssociationConnector Association="conferenceModel.AspNetUserRoles" />
+        <EntityTypeShape EntityType="conferenceModel.Friends" Width="1.5" PointX="5.375" PointY="4.75" />
+        <EntityTypeShape EntityType="conferenceModel.Invitation" Width="1.5" PointX="0.75" PointY="6.75" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>
