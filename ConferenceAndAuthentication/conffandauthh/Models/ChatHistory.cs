@@ -20,5 +20,6 @@ namespace conffandauthh.Models
         public string content { get; set; }
     
         public virtual OldRooms OldRooms { get; set; }
+        public virtual AspNetUsers AspNetUsers { get; set; }
     }
 }

@@ -32,5 +32,6 @@ namespace conffandauthh.Models
         public virtual DbSet<Rooms> Rooms { get; set; }
         public virtual DbSet<UsersInOldRoom> UsersInOldRoom { get; set; }
         public virtual DbSet<UsersInRoom> UsersInRoom { get; set; }
+        public virtual DbSet<AspNetUsers> AspNetUsers { get; set; }
     }
 }
