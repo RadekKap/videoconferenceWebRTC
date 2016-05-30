@@ -1,0 +1,342 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="conferenceModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012.Azure" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="ChatHistory">
+          <Key>
+            <PropertyRef Name="messageId" />
+          </Key>
+          <Property Name="messageId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="oldRoomId" Type="int" />
+          <Property Name="userId" Type="nvarchar" MaxLength="128" />
+          <Property Name="content" Type="nvarchar" MaxLength="255" />
+        </EntityType>
+        <EntityType Name="Friends">
+          <Key>
+            <PropertyRef Name="firstUserId" />
+            <PropertyRef Name="secondUserId" />
+          </Key>
+          <Property Name="firstUserId" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="secondUserId" Type="nvarchar" MaxLength="128" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Invitation">
+          <Key>
+            <PropertyRef Name="firstUserId" />
+            <PropertyRef Name="secondUserId" />
+          </Key>
+          <Property Name="firstUserId" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="secondUserId" Type="nvarchar" MaxLength="128" Nullable="false" />
+        </EntityType>
+        <EntityType Name="OldRooms">
+          <Key>
+            <PropertyRef Name="oldRoomId" />
+          </Key>
+          <Property Name="oldRoomId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ownerId" Type="nvarchar" MaxLength="128" />
+          <Property Name="creationDate" Type="date" />
+        </EntityType>
+        <EntityType Name="Rooms">
+          <Key>
+            <PropertyRef Name="roomId" />
+          </Key>
+          <Property Name="roomId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ownerId" Type="nvarchar" MaxLength="128" />
+          <Property Name="creationDate" Type="date" />
+          <Property Name="name" Type="nvarchar" MaxLength="30" />
+          <Property Name="roomPassword" Type="nvarchar" MaxLength="30" />
+        </EntityType>
+        <EntityType Name="UsersInOldRoom">
+          <Key>
+            <PropertyRef Name="userId" />
+            <PropertyRef Name="oldRoomId" />
+          </Key>
+          <Property Name="userId" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="oldRoomId" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="UsersInRoom">
+          <Key>
+            <PropertyRef Name="roomId" />
+            <PropertyRef Name="userId" />
+          </Key>
+          <Property Name="roomId" Type="int" Nullable="false" />
+          <Property Name="userId" Type="nvarchar" MaxLength="128" Nullable="false" />
+        </EntityType>
+        <Association Name="FK__ChatHisto__oldRo__59C55456">
+          <End Role="OldRooms" Type="Self.OldRooms" Multiplicity="0..1" />
+          <End Role="ChatHistory" Type="Self.ChatHistory" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="OldRooms">
+              <PropertyRef Name="oldRoomId" />
+            </Principal>
+            <Dependent Role="ChatHistory">
+              <PropertyRef Name="oldRoomId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__UsersInOl__oldRo__56E8E7AB">
+          <End Role="OldRooms" Type="Self.OldRooms" Multiplicity="1" />
+          <End Role="UsersInOldRoom" Type="Self.UsersInOldRoom" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="OldRooms">
+              <PropertyRef Name="oldRoomId" />
+            </Principal>
+            <Dependent Role="UsersInOldRoom">
+              <PropertyRef Name="oldRoomId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__UsersInRo__roomI__4F47C5E3">
+          <End Role="Rooms" Type="Self.Rooms" Multiplicity="1" />
+          <End Role="UsersInRoom" Type="Self.UsersInRoom" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Rooms">
+              <PropertyRef Name="roomId" />
+            </Principal>
+            <Dependent Role="UsersInRoom">
+              <PropertyRef Name="roomId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="conferenceModelStoreContainer">
+          <EntitySet Name="ChatHistory" EntityType="Self.ChatHistory" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Friends" EntityType="Self.Friends" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Invitation" EntityType="Self.Invitation" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="OldRooms" EntityType="Self.OldRooms" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Rooms" EntityType="Self.Rooms" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="UsersInOldRoom" EntityType="Self.UsersInOldRoom" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="UsersInRoom" EntityType="Self.UsersInRoom" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK__ChatHisto__oldRo__59C55456" Association="Self.FK__ChatHisto__oldRo__59C55456">
+            <End Role="OldRooms" EntitySet="OldRooms" />
+            <End Role="ChatHistory" EntitySet="ChatHistory" />
+          </AssociationSet>
+          <AssociationSet Name="FK__UsersInOl__oldRo__56E8E7AB" Association="Self.FK__UsersInOl__oldRo__56E8E7AB">
+            <End Role="OldRooms" EntitySet="OldRooms" />
+            <End Role="UsersInOldRoom" EntitySet="UsersInOldRoom" />
+          </AssociationSet>
+          <AssociationSet Name="FK__UsersInRo__roomI__4F47C5E3" Association="Self.FK__UsersInRo__roomI__4F47C5E3">
+            <End Role="Rooms" EntitySet="Rooms" />
+            <End Role="UsersInRoom" EntitySet="UsersInRoom" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="conferenceModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="ChatHistory">
+          <Key>
+            <PropertyRef Name="messageId" />
+          </Key>
+          <Property Name="messageId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="oldRoomId" Type="Int32" />
+          <Property Name="userId" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="content" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="OldRooms" Relationship="Self.FK__ChatHisto__oldRo__59C55456" FromRole="ChatHistory" ToRole="OldRooms" />
+        </EntityType>
+        <EntityType Name="Friends">
+          <Key>
+            <PropertyRef Name="firstUserId" />
+            <PropertyRef Name="secondUserId" />
+          </Key>
+          <Property Name="firstUserId" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="secondUserId" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Invitation">
+          <Key>
+            <PropertyRef Name="firstUserId" />
+            <PropertyRef Name="secondUserId" />
+          </Key>
+          <Property Name="firstUserId" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="secondUserId" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+        </EntityType>
+        <EntityType Name="OldRooms">
+          <Key>
+            <PropertyRef Name="oldRoomId" />
+          </Key>
+          <Property Name="oldRoomId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ownerId" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="creationDate" Type="DateTime" Precision="0" />
+          <NavigationProperty Name="ChatHistory" Relationship="Self.FK__ChatHisto__oldRo__59C55456" FromRole="OldRooms" ToRole="ChatHistory" />
+          <NavigationProperty Name="UsersInOldRoom" Relationship="Self.FK__UsersInOl__oldRo__56E8E7AB" FromRole="OldRooms" ToRole="UsersInOldRoom" />
+        </EntityType>
+        <EntityType Name="Rooms">
+          <Key>
+            <PropertyRef Name="roomId" />
+          </Key>
+          <Property Name="roomId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ownerId" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="creationDate" Type="DateTime" Precision="0" />
+          <Property Name="name" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
+          <Property Name="roomPassword" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="UsersInRoom" Relationship="Self.FK__UsersInRo__roomI__4F47C5E3" FromRole="Rooms" ToRole="UsersInRoom" />
+        </EntityType>
+        <EntityType Name="UsersInOldRoom">
+          <Key>
+            <PropertyRef Name="userId" />
+            <PropertyRef Name="oldRoomId" />
+          </Key>
+          <Property Name="userId" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="oldRoomId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="OldRooms" Relationship="Self.FK__UsersInOl__oldRo__56E8E7AB" FromRole="UsersInOldRoom" ToRole="OldRooms" />
+        </EntityType>
+        <EntityType Name="UsersInRoom">
+          <Key>
+            <PropertyRef Name="roomId" />
+            <PropertyRef Name="userId" />
+          </Key>
+          <Property Name="roomId" Type="Int32" Nullable="false" />
+          <Property Name="userId" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+          <NavigationProperty Name="Rooms" Relationship="Self.FK__UsersInRo__roomI__4F47C5E3" FromRole="UsersInRoom" ToRole="Rooms" />
+        </EntityType>
+        <Association Name="FK__ChatHisto__oldRo__59C55456">
+          <End Role="OldRooms" Type="Self.OldRooms" Multiplicity="0..1" />
+          <End Role="ChatHistory" Type="Self.ChatHistory" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="OldRooms">
+              <PropertyRef Name="oldRoomId" />
+            </Principal>
+            <Dependent Role="ChatHistory">
+              <PropertyRef Name="oldRoomId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__UsersInOl__oldRo__56E8E7AB">
+          <End Role="OldRooms" Type="Self.OldRooms" Multiplicity="1" />
+          <End Role="UsersInOldRoom" Type="Self.UsersInOldRoom" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="OldRooms">
+              <PropertyRef Name="oldRoomId" />
+            </Principal>
+            <Dependent Role="UsersInOldRoom">
+              <PropertyRef Name="oldRoomId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__UsersInRo__roomI__4F47C5E3">
+          <End Role="Rooms" Type="Self.Rooms" Multiplicity="1" />
+          <End Role="UsersInRoom" Type="Self.UsersInRoom" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Rooms">
+              <PropertyRef Name="roomId" />
+            </Principal>
+            <Dependent Role="UsersInRoom">
+              <PropertyRef Name="roomId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="conferenceEntities2" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="ChatHistory" EntityType="Self.ChatHistory" />
+          <EntitySet Name="Friends" EntityType="Self.Friends" />
+          <EntitySet Name="Invitation" EntityType="Self.Invitation" />
+          <EntitySet Name="OldRooms" EntityType="Self.OldRooms" />
+          <EntitySet Name="Rooms" EntityType="Self.Rooms" />
+          <EntitySet Name="UsersInOldRoom" EntityType="Self.UsersInOldRoom" />
+          <EntitySet Name="UsersInRoom" EntityType="Self.UsersInRoom" />
+          <AssociationSet Name="FK__ChatHisto__oldRo__59C55456" Association="Self.FK__ChatHisto__oldRo__59C55456">
+            <End Role="OldRooms" EntitySet="OldRooms" />
+            <End Role="ChatHistory" EntitySet="ChatHistory" />
+          </AssociationSet>
+          <AssociationSet Name="FK__UsersInOl__oldRo__56E8E7AB" Association="Self.FK__UsersInOl__oldRo__56E8E7AB">
+            <End Role="OldRooms" EntitySet="OldRooms" />
+            <End Role="UsersInOldRoom" EntitySet="UsersInOldRoom" />
+          </AssociationSet>
+          <AssociationSet Name="FK__UsersInRo__roomI__4F47C5E3" Association="Self.FK__UsersInRo__roomI__4F47C5E3">
+            <End Role="Rooms" EntitySet="Rooms" />
+            <End Role="UsersInRoom" EntitySet="UsersInRoom" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="conferenceModelStoreContainer" CdmEntityContainer="conferenceEntities2">
+          <EntitySetMapping Name="ChatHistory">
+            <EntityTypeMapping TypeName="conferenceModel.ChatHistory">
+              <MappingFragment StoreEntitySet="ChatHistory">
+                <ScalarProperty Name="messageId" ColumnName="messageId" />
+                <ScalarProperty Name="oldRoomId" ColumnName="oldRoomId" />
+                <ScalarProperty Name="userId" ColumnName="userId" />
+                <ScalarProperty Name="content" ColumnName="content" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Friends">
+            <EntityTypeMapping TypeName="conferenceModel.Friends">
+              <MappingFragment StoreEntitySet="Friends">
+                <ScalarProperty Name="firstUserId" ColumnName="firstUserId" />
+                <ScalarProperty Name="secondUserId" ColumnName="secondUserId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Invitation">
+            <EntityTypeMapping TypeName="conferenceModel.Invitation">
+              <MappingFragment StoreEntitySet="Invitation">
+                <ScalarProperty Name="firstUserId" ColumnName="firstUserId" />
+                <ScalarProperty Name="secondUserId" ColumnName="secondUserId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="OldRooms">
+            <EntityTypeMapping TypeName="conferenceModel.OldRooms">
+              <MappingFragment StoreEntitySet="OldRooms">
+                <ScalarProperty Name="oldRoomId" ColumnName="oldRoomId" />
+                <ScalarProperty Name="ownerId" ColumnName="ownerId" />
+                <ScalarProperty Name="creationDate" ColumnName="creationDate" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Rooms">
+            <EntityTypeMapping TypeName="conferenceModel.Rooms">
+              <MappingFragment StoreEntitySet="Rooms">
+                <ScalarProperty Name="roomId" ColumnName="roomId" />
+                <ScalarProperty Name="ownerId" ColumnName="ownerId" />
+                <ScalarProperty Name="creationDate" ColumnName="creationDate" />
+                <ScalarProperty Name="name" ColumnName="name" />
+                <ScalarProperty Name="roomPassword" ColumnName="roomPassword" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="UsersInOldRoom">
+            <EntityTypeMapping TypeName="conferenceModel.UsersInOldRoom">
+              <MappingFragment StoreEntitySet="UsersInOldRoom">
+                <ScalarProperty Name="userId" ColumnName="userId" />
+                <ScalarProperty Name="oldRoomId" ColumnName="oldRoomId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="UsersInRoom">
+            <EntityTypeMapping TypeName="conferenceModel.UsersInRoom">
+              <MappingFragment StoreEntitySet="UsersInRoom">
+                <ScalarProperty Name="roomId" ColumnName="roomId" />
+                <ScalarProperty Name="userId" ColumnName="userId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="false" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>
