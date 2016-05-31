@@ -8,7 +8,7 @@ using System.Web.Mvc;
 
 namespace conffandauthh.Controllers
 {
-    public class FriendsController : Controller
+    public class FriendsController : MainController
     {
         // GET: Friends
         public ActionResult Index()
@@ -28,8 +28,28 @@ namespace conffandauthh.Controllers
         }
 
         [HttpPost]
-        public string inviteToRoom()
+        public string inviteToRoom(string username)
         {
+            // użytkownik zapraszający
+            ApplicationUser user = getUser();
+
+            ApplicationDbContext adb = new ApplicationDbContext();
+            var users = adb.Users.ToArray();
+            // użytkownik zapraszany
+            var invitedUser = users.First(u => u.UserName == username);
+
+            Invitation invitation = new Invitation()
+            {
+                firstUserId = user.Id,
+                secondUserId = invitedUser.Id
+            };
+
+            using (var db = new conferenceEntities2())
+            {
+                var invitations = db.Set<Invitation>();
+                invitations.Add(invitation);
+                db.SaveChanges();
+            }//using
             return "ok";
         }//inviteToRoom()
     }
