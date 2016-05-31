@@ -18,6 +18,14 @@
             <button disabled type="submit">Stwórz nowy pokój</button>
         </form>
         <p id="subTitle"></p>
+
+        // formularz zapraszania znajomego do pokoju
+        <div id="addFriend">
+            Dodaj znajomego.<br />
+            Wprowadź nick znajomego, którego chcesz zaprosić do rozmowy: <input id="friendName" />
+            <button type="button" id="addFriendButton">Zaproś</button>
+        </div>
+
         <div>
             <button id="screenShareButton"></button>
             <p>
@@ -51,6 +59,18 @@
         <script>
             // grab the room from the URL
             var room = location.search && location.search.split('?')[1];
+
+            // ukrywanie forularza do zapraszania przyjaciół
+            $("#addFriend").hide();
+
+            // wysyłanie zaproszenia
+            $('#addFriendButton').click(function () {
+                var friendname = $('#friendName').val();
+                console.log(friendname);
+
+                // Clear text box and reset focus for next comment.
+                $('#friendName').val('').focus();
+            });
 
 
             // create our webrtc connection
@@ -119,7 +139,7 @@
 
             // we got access to the camera
             webrtc.on('localStream', function (stream) {
-                var button = document.querySelector('form>button');
+                var button = document.querySelector('#createRoom>button');
                 if (button) button.removeAttribute('disabled');
                 $('#localVolume').show();
             });
@@ -247,12 +267,15 @@
                 document.getElementById('title').innerText = 'Pokój: ' + name;
                 document.getElementById('subTitle').innerText =  'Link do pokoju: ' + location.href;
                 $('body').addClass('active');
+
+                // pokazywanie formularza dodawania znajomego
+                $("#addFriend").show();
             }
 
             if (room) {
                 setRoom(room);
             } else {
-                $('form').submit(function () {
+                $('#createRoom').submit(function () {
                     var val = $('#sessionInput').val().toLowerCase().replace(/\s/g, '-').replace(/[^A-Za-z0-9_\-]/g, '');
                     var pass = $('#passwordInput').val();
                     $.post('https://' + location.host + '/Home/createRoom', { name: val, password: pass });

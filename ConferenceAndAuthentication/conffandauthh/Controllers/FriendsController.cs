@@ -26,5 +26,11 @@ namespace conffandauthh.Controllers
                 s += user.Id + ",";
             return s;
         }
+
+        [HttpPost]
+        public string inviteToRoom()
+        {
+            return "ok";
+        }//inviteToRoom()
     }
 }
