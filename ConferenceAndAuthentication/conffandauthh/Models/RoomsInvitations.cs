@@ -17,5 +17,8 @@ namespace conffandauthh.Models
         public int invitationId { get; set; }
         public string inviterId { get; set; }
         public string invitee { get; set; }
+        public Nullable<int> roomId { get; set; }
+    
+        public virtual Rooms Rooms { get; set; }
     }
 }

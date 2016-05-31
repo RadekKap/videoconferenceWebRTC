@@ -63,7 +63,8 @@ Create table Friends (
 CREATE TABLE RoomsInvitations (
 	invitationId INT PRIMARY KEY IDENTITY(1,1),
 	inviterId NVARCHAR(128) REFERENCES AspNetUsers(Id),
-	invitee NVARCHAR(128) REFERENCES AspNetUsers(Id)
+	invitee NVARCHAR(128) REFERENCES AspNetUsers(Id),
+	roomId INT REFERENCES Rooms(roomId)
 );
 
 -- sprawdzanie poprawnoœci utworzenia tabel

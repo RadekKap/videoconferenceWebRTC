@@ -68,10 +68,11 @@
             $('#addFriendButton').click(function () {
                 var friendname = $('#friendName').val();
                 console.log(friendname);
+                console.log(room);
 
                 $.ajax({url: 'https://' + location.host + '/Friends/inviteToRoom',
                     type: 'POST', 
-                    data: { username: friendname },
+                    data: { username: friendname, roomname: room },
                     success: function(data) {
                         $('#sendedRoomInvitation').text(data)
                     }

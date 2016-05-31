@@ -55,6 +55,7 @@
           <Property Name="invitationId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="inviterId" Type="nvarchar" MaxLength="128" />
           <Property Name="invitee" Type="nvarchar" MaxLength="128" />
+          <Property Name="roomId" Type="int" />
         </EntityType>
         <EntityType Name="UsersInOldRoom">
           <Key>
@@ -81,6 +82,18 @@
             </Principal>
             <Dependent Role="ChatHistory">
               <PropertyRef Name="oldRoomId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__RoomsInvi__roomI__66B53B20">
+          <End Role="Rooms" Type="Self.Rooms" Multiplicity="0..1" />
+          <End Role="RoomsInvitations" Type="Self.RoomsInvitations" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Rooms">
+              <PropertyRef Name="roomId" />
+            </Principal>
+            <Dependent Role="RoomsInvitations">
+              <PropertyRef Name="roomId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -120,6 +133,10 @@
           <AssociationSet Name="FK__ChatHisto__oldRo__51BA1E3A" Association="Self.FK__ChatHisto__oldRo__51BA1E3A">
             <End Role="OldRooms" EntitySet="OldRooms" />
             <End Role="ChatHistory" EntitySet="ChatHistory" />
+          </AssociationSet>
+          <AssociationSet Name="FK__RoomsInvi__roomI__66B53B20" Association="Self.FK__RoomsInvi__roomI__66B53B20">
+            <End Role="Rooms" EntitySet="Rooms" />
+            <End Role="RoomsInvitations" EntitySet="RoomsInvitations" />
           </AssociationSet>
           <AssociationSet Name="FK__UsersInOl__oldRo__4EDDB18F" Association="Self.FK__UsersInOl__oldRo__4EDDB18F">
             <End Role="OldRooms" EntitySet="OldRooms" />
@@ -164,6 +181,7 @@
           <Property Name="name" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
           <Property Name="roomPassword" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="UsersInRoom" Relationship="Self.FK__UsersInRo__roomI__4F47C5E3" FromRole="Rooms" ToRole="UsersInRoom" />
+          <NavigationProperty Name="RoomsInvitations" Relationship="conferenceModel.FK__RoomsInvi__roomI__66B53B20" FromRole="Rooms" ToRole="RoomsInvitations" />
         </EntityType>
         <EntityType Name="UsersInOldRoom">
           <Key>
@@ -240,6 +258,10 @@
           <EntitySet Name="Friends" EntityType="conferenceModel.Friends" />
           <EntitySet Name="Invitation" EntityType="conferenceModel.Invitation" />
           <EntitySet Name="RoomsInvitations" EntityType="conferenceModel.RoomsInvitations" />
+          <AssociationSet Name="FK__RoomsInvi__roomI__66B53B20" Association="conferenceModel.FK__RoomsInvi__roomI__66B53B20">
+            <End Role="Rooms" EntitySet="Rooms" />
+            <End Role="RoomsInvitations" EntitySet="RoomsInvitations" />
+          </AssociationSet>
           </EntityContainer>
         <EntityType Name="Friends">
           <Key>
@@ -264,7 +286,21 @@
           <Property Name="invitationId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="inviterId" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
           <Property Name="invitee" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="roomId" Type="Int32" />
+          <NavigationProperty Name="Rooms" Relationship="conferenceModel.FK__RoomsInvi__roomI__66B53B20" FromRole="RoomsInvitations" ToRole="Rooms" />
         </EntityType>
+        <Association Name="FK__RoomsInvi__roomI__66B53B20">
+          <End Type="conferenceModel.Rooms" Role="Rooms" Multiplicity="0..1" />
+          <End Type="conferenceModel.RoomsInvitations" Role="RoomsInvitations" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Rooms">
+              <PropertyRef Name="roomId" />
+            </Principal>
+            <Dependent Role="RoomsInvitations">
+              <PropertyRef Name="roomId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -338,6 +374,7 @@
           <EntitySetMapping Name="RoomsInvitations">
             <EntityTypeMapping TypeName="conferenceModel.RoomsInvitations">
               <MappingFragment StoreEntitySet="RoomsInvitations">
+                <ScalarProperty Name="roomId" ColumnName="roomId" />
                 <ScalarProperty Name="invitee" ColumnName="invitee" />
                 <ScalarProperty Name="inviterId" ColumnName="inviterId" />
                 <ScalarProperty Name="invitationId" ColumnName="invitationId" />

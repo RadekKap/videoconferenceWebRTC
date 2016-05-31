@@ -28,7 +28,7 @@ namespace conffandauthh.Controllers
         }
 
         [HttpPost]
-        public string inviteToRoom(string username)
+        public string inviteToRoom(string username, string roomname)
         {
             // użytkownik zapraszający
             ApplicationUser user = getUser();
@@ -42,6 +42,7 @@ namespace conffandauthh.Controllers
             {
                 inviterId = user.Id,
                 invitee = invitedUser.Id
+                
             };
 
             using (var db = new conferenceEntities2())
@@ -57,6 +58,9 @@ namespace conffandauthh.Controllers
                 catch (InvalidOperationException)
                 {
                     // wysyłanie zaproszenia
+                    var rooms = db.Set<Rooms>();
+                    int roomId = rooms.First(r => r.name == roomname).roomId;
+                    invitation.roomId = roomId;
                     invitations.Add(invitation);
                     db.SaveChanges();
                     return "Wysłano zaproszenie.";
