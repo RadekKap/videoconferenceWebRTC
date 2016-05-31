@@ -67,14 +67,16 @@
             // wysyłanie zaproszenia
             $('#addFriendButton').click(function () {
                 var friendname = $('#friendName').val();
-                console.log(friendname);
-                console.log(room);
+                $('#addFriendButton').attr("disabled", true);
+                $('#sendedRoomInvitation').text('Wysyłanie zaproszenia...');
+                room = location.search && location.search.split('?')[1];
 
                 $.ajax({url: 'https://' + location.host + '/Friends/inviteToRoom',
                     type: 'POST', 
                     data: { username: friendname, roomname: room },
                     success: function(data) {
-                        $('#sendedRoomInvitation').text(data)
+                        $('#sendedRoomInvitation').text(data);
+                        $('#addFriendButton').attr("disabled", false);
                     }
                 });
                 $('#friendName').val('').focus();
