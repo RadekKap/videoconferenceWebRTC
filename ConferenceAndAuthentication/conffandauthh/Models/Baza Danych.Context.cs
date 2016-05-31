@@ -32,5 +32,6 @@ namespace conffandauthh.Models
         public virtual DbSet<UsersInRoom> UsersInRoom { get; set; }
         public virtual DbSet<Friends> Friends { get; set; }
         public virtual DbSet<Invitation> Invitation { get; set; }
+        public virtual DbSet<RoomsInvitations> RoomsInvitations { get; set; }
     }
 }

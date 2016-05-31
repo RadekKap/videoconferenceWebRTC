@@ -19,11 +19,12 @@
         </form>
         <p id="subTitle"></p>
 
-        // formularz zapraszania znajomego do pokoju
+        // zapraszanie znajomego do pokoju
         <div id="addFriend">
             Dodaj znajomego.<br />
             Wprowadź nick znajomego, którego chcesz zaprosić do rozmowy: <input id="friendName" />
             <button type="button" id="addFriendButton">Zaproś</button>
+            <p id="sendedRoomInvitation" style="display:inline"></p>
         </div>
 
         <div>
@@ -68,7 +69,13 @@
                 var friendname = $('#friendName').val();
                 console.log(friendname);
 
-                // Clear text box and reset focus for next comment.
+                $.ajax({url: 'https://' + location.host + '/Friends/inviteToRoom',
+                    type: 'POST', 
+                    data: { username: friendname },
+                    success: function(data) {
+                        $('#sendedRoomInvitation').text(data)
+                    }
+                });
                 $('#friendName').val('').focus();
             });
 

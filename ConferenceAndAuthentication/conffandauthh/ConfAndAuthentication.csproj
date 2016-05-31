@@ -211,6 +211,9 @@
     <Compile Include="Models\Rooms.cs">
       <DependentUpon>Baza Danych.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\RoomsInvitations.cs">
+      <DependentUpon>Baza Danych.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\UsersInOldRoom.cs">
       <DependentUpon>Baza Danych.tt</DependentUpon>
     </Compile>
@@ -259,7 +262,9 @@
     <Content Include="Scripts\respond.js" />
     <Content Include="Scripts\respond.min.js" />
     <Content Include="Scripts\_references.js" />
-    <Content Include="Web.config" />
+    <Content Include="Web.config">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </Content>

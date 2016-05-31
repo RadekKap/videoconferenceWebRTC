@@ -38,19 +38,30 @@ namespace conffandauthh.Controllers
             // użytkownik zapraszany
             var invitedUser = users.First(u => u.UserName == username);
 
-            Invitation invitation = new Invitation()
+            RoomsInvitations invitation = new RoomsInvitations()
             {
-                firstUserId = user.Id,
-                secondUserId = invitedUser.Id
+                inviterId = user.Id,
+                invitee = invitedUser.Id
             };
 
             using (var db = new conferenceEntities2())
             {
-                var invitations = db.Set<Invitation>();
-                invitations.Add(invitation);
-                db.SaveChanges();
+                var invitations = db.Set<RoomsInvitations>();
+
+                // sprawdzanie czy użytkownik był wcześniej zaproszony
+                try
+                {
+                    invitations.First(i => i.inviterId == invitation.inviterId && i.invitee == invitation.invitee);
+                    return "Ten użytkownik został już wcześniej zaproszony.";
+                }//try
+                catch (InvalidOperationException)
+                {
+                    // wysyłanie zaproszenia
+                    invitations.Add(invitation);
+                    db.SaveChanges();
+                    return "Wysłano zaproszenie.";
+                }//catch
             }//using
-            return "ok";
         }//inviteToRoom()
     }
 }

@@ -59,6 +59,13 @@ Create table Friends (
 	Primary Key (firstUserId,secondUserId)
 );
 
+-- zaproszenia do pokojów
+CREATE TABLE RoomsInvitations (
+	invitationId INT PRIMARY KEY IDENTITY(1,1),
+	inviterId NVARCHAR(128) REFERENCES AspNetUsers(Id),
+	invitee NVARCHAR(128) REFERENCES AspNetUsers(Id)
+);
+
 -- sprawdzanie poprawnoœci utworzenia tabel
 SELECT * FROM Rooms;
 SELECT * FROM UsersInRoom;

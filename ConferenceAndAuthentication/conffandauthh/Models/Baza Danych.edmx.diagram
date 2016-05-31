@@ -15,6 +15,7 @@
         <AssociationConnector Association="conferenceModel.FK__UsersInRo__roomI__4F47C5E3" ManuallyRouted="false" />
         <EntityTypeShape EntityType="conferenceModel.Friends" Width="1.5" PointX="5.375" PointY="4.75" />
         <EntityTypeShape EntityType="conferenceModel.Invitation" Width="1.5" PointX="0.75" PointY="6.75" />
+        <EntityTypeShape EntityType="conferenceModel.RoomsInvitations" Width="1.5" PointX="3.375" PointY="7.75" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>
