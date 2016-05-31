@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-      <Schema Namespace="conferenceModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012.Azure" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+    <Schema Namespace="conferenceModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012.Azure" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="ChatHistory">
           <Key>
             <PropertyRef Name="messageId" />
@@ -16,19 +16,19 @@
         </EntityType>
         <EntityType Name="Friends">
           <Key>
-            <PropertyRef Name="firstUserId" />
-            <PropertyRef Name="secondUserId" />
+            <PropertyRef Name="Id_Friends" />
           </Key>
-          <Property Name="firstUserId" Type="nvarchar" MaxLength="128" Nullable="false" />
-          <Property Name="secondUserId" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="Id_Friends" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="firstUserId" Type="nvarchar" MaxLength="128" />
+          <Property Name="secondUserId" Type="nvarchar" MaxLength="128" />
         </EntityType>
         <EntityType Name="Invitation">
           <Key>
-            <PropertyRef Name="firstUserId" />
-            <PropertyRef Name="secondUserId" />
+            <PropertyRef Name="Id_Invitation" />
           </Key>
-          <Property Name="firstUserId" Type="nvarchar" MaxLength="128" Nullable="false" />
-          <Property Name="secondUserId" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="Id_Invitation" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="firstUserId" Type="nvarchar" MaxLength="128" />
+          <Property Name="secondUserId" Type="nvarchar" MaxLength="128" />
         </EntityType>
         <EntityType Name="OldRooms">
           <Key>
@@ -64,7 +64,7 @@
           <Property Name="roomId" Type="int" Nullable="false" />
           <Property Name="userId" Type="nvarchar" MaxLength="128" Nullable="false" />
         </EntityType>
-        <Association Name="FK__ChatHisto__oldRo__59C55456">
+        <Association Name="FK__ChatHisto__oldRo__51BA1E3A">
           <End Role="OldRooms" Type="Self.OldRooms" Multiplicity="0..1" />
           <End Role="ChatHistory" Type="Self.ChatHistory" Multiplicity="*" />
           <ReferentialConstraint>
@@ -76,7 +76,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__UsersInOl__oldRo__56E8E7AB">
+        <Association Name="FK__UsersInOl__oldRo__4EDDB18F">
           <End Role="OldRooms" Type="Self.OldRooms" Multiplicity="1" />
           <End Role="UsersInOldRoom" Type="Self.UsersInOldRoom" Multiplicity="*" />
           <ReferentialConstraint>
@@ -88,7 +88,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__UsersInRo__roomI__4F47C5E3">
+        <Association Name="FK__UsersInRo__roomI__473C8FC7">
           <End Role="Rooms" Type="Self.Rooms" Multiplicity="1" />
           <End Role="UsersInRoom" Type="Self.UsersInRoom" Multiplicity="*" />
           <ReferentialConstraint>
@@ -108,21 +108,20 @@
           <EntitySet Name="Rooms" EntityType="Self.Rooms" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="UsersInOldRoom" EntityType="Self.UsersInOldRoom" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="UsersInRoom" EntityType="Self.UsersInRoom" Schema="dbo" store:Type="Tables" />
-          <AssociationSet Name="FK__ChatHisto__oldRo__59C55456" Association="Self.FK__ChatHisto__oldRo__59C55456">
+          <AssociationSet Name="FK__ChatHisto__oldRo__51BA1E3A" Association="Self.FK__ChatHisto__oldRo__51BA1E3A">
             <End Role="OldRooms" EntitySet="OldRooms" />
             <End Role="ChatHistory" EntitySet="ChatHistory" />
           </AssociationSet>
-          <AssociationSet Name="FK__UsersInOl__oldRo__56E8E7AB" Association="Self.FK__UsersInOl__oldRo__56E8E7AB">
+          <AssociationSet Name="FK__UsersInOl__oldRo__4EDDB18F" Association="Self.FK__UsersInOl__oldRo__4EDDB18F">
             <End Role="OldRooms" EntitySet="OldRooms" />
             <End Role="UsersInOldRoom" EntitySet="UsersInOldRoom" />
           </AssociationSet>
-          <AssociationSet Name="FK__UsersInRo__roomI__4F47C5E3" Association="Self.FK__UsersInRo__roomI__4F47C5E3">
+          <AssociationSet Name="FK__UsersInRo__roomI__473C8FC7" Association="Self.FK__UsersInRo__roomI__473C8FC7">
             <End Role="Rooms" EntitySet="Rooms" />
             <End Role="UsersInRoom" EntitySet="UsersInRoom" />
           </AssociationSet>
         </EntityContainer>
-      </Schema>
-    </edmx:StorageModels>
+      </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="conferenceModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
@@ -135,22 +134,6 @@
           <Property Name="userId" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
           <Property Name="content" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="OldRooms" Relationship="Self.FK__ChatHisto__oldRo__59C55456" FromRole="ChatHistory" ToRole="OldRooms" />
-        </EntityType>
-        <EntityType Name="Friends">
-          <Key>
-            <PropertyRef Name="firstUserId" />
-            <PropertyRef Name="secondUserId" />
-          </Key>
-          <Property Name="firstUserId" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="secondUserId" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
-        </EntityType>
-        <EntityType Name="Invitation">
-          <Key>
-            <PropertyRef Name="firstUserId" />
-            <PropertyRef Name="secondUserId" />
-          </Key>
-          <Property Name="firstUserId" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="secondUserId" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
         </EntityType>
         <EntityType Name="OldRooms">
           <Key>
@@ -229,8 +212,6 @@
         </Association>
         <EntityContainer Name="conferenceEntities2" annotation:LazyLoadingEnabled="true">
           <EntitySet Name="ChatHistory" EntityType="Self.ChatHistory" />
-          <EntitySet Name="Friends" EntityType="Self.Friends" />
-          <EntitySet Name="Invitation" EntityType="Self.Invitation" />
           <EntitySet Name="OldRooms" EntityType="Self.OldRooms" />
           <EntitySet Name="Rooms" EntityType="Self.Rooms" />
           <EntitySet Name="UsersInOldRoom" EntityType="Self.UsersInOldRoom" />
@@ -247,8 +228,26 @@
             <End Role="Rooms" EntitySet="Rooms" />
             <End Role="UsersInRoom" EntitySet="UsersInRoom" />
           </AssociationSet>
-        </EntityContainer>
-      </Schema>
+          <EntitySet Name="Friends" EntityType="conferenceModel.Friends" />
+          <EntitySet Name="Invitation" EntityType="conferenceModel.Invitation" />
+          </EntityContainer>
+        <EntityType Name="Friends">
+          <Key>
+            <PropertyRef Name="Id_Friends" />
+          </Key>
+          <Property Name="Id_Friends" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="firstUserId" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="secondUserId" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="Invitation">
+          <Key>
+            <PropertyRef Name="Id_Invitation" />
+          </Key>
+          <Property Name="Id_Invitation" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="firstUserId" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="secondUserId" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
+        </EntityType>
+        </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
     <edmx:Mappings>
@@ -261,22 +260,6 @@
                 <ScalarProperty Name="oldRoomId" ColumnName="oldRoomId" />
                 <ScalarProperty Name="userId" ColumnName="userId" />
                 <ScalarProperty Name="content" ColumnName="content" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="Friends">
-            <EntityTypeMapping TypeName="conferenceModel.Friends">
-              <MappingFragment StoreEntitySet="Friends">
-                <ScalarProperty Name="firstUserId" ColumnName="firstUserId" />
-                <ScalarProperty Name="secondUserId" ColumnName="secondUserId" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="Invitation">
-            <EntityTypeMapping TypeName="conferenceModel.Invitation">
-              <MappingFragment StoreEntitySet="Invitation">
-                <ScalarProperty Name="firstUserId" ColumnName="firstUserId" />
-                <ScalarProperty Name="secondUserId" ColumnName="secondUserId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -313,6 +296,24 @@
               <MappingFragment StoreEntitySet="UsersInRoom">
                 <ScalarProperty Name="roomId" ColumnName="roomId" />
                 <ScalarProperty Name="userId" ColumnName="userId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Friends">
+            <EntityTypeMapping TypeName="conferenceModel.Friends">
+              <MappingFragment StoreEntitySet="Friends">
+                <ScalarProperty Name="secondUserId" ColumnName="secondUserId" />
+                <ScalarProperty Name="firstUserId" ColumnName="firstUserId" />
+                <ScalarProperty Name="Id_Friends" ColumnName="Id_Friends" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Invitation">
+            <EntityTypeMapping TypeName="conferenceModel.Invitation">
+              <MappingFragment StoreEntitySet="Invitation">
+                <ScalarProperty Name="secondUserId" ColumnName="secondUserId" />
+                <ScalarProperty Name="firstUserId" ColumnName="firstUserId" />
+                <ScalarProperty Name="Id_Invitation" ColumnName="Id_Invitation" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

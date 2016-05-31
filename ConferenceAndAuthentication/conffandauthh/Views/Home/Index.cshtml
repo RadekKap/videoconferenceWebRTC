@@ -1,12 +1,16 @@
 ﻿
 
 
+@using Microsoft.AspNet.Identity
+
+
 @{
     ViewBag.Title = "Wideoczat";
 }
 
 @if (Request.IsAuthenticated)
 {
+    
         <h3 id="title">Utwórz pokój</h3>
         <form id="createRoom">
             Nazwa pokoju: <input id="sessionInput" /><br />
@@ -35,8 +39,9 @@
 
         <div>
             <textarea rows="4" cols="50" id="message"></textarea>
-            <input type="button" id="sendmessage" value="Wyślij" /><input type="button" id="name" value="Nick" />
-            <input type="hidden" id="displayname" />
+            <input type="button" id="sendmessage" value="Wyślij" />
+        
+            <input type="hidden" id="displayname" value="@ViewBag.Nick" />
 
 
             <ul id="discussion"></ul>
@@ -46,6 +51,7 @@
         <script>
             // grab the room from the URL
             var room = location.search && location.search.split('?')[1];
+
 
             // create our webrtc connection
             var webrtc = new SimpleWebRTC({
@@ -97,9 +103,7 @@
 
 
 
-            $('#name').click(function () {
-                $('#displayname').val(prompt('Podaj nick:', ''));
-            });
+
             // when it's ready, join if we got a room from the URL
             webrtc.on('readyToCall', function () {
                 // you can name it anything
@@ -238,7 +242,8 @@
 
             // Since we use this twice we put it here
             function setRoom(name) {
-                document.querySelector('form').remove();
+                document.getElementById('createRoom').remove();
+               
                 document.getElementById('title').innerText = 'Pokój: ' + name;
                 document.getElementById('subTitle').innerText =  'Link do pokoju: ' + location.href;
                 $('body').addClass('active');
