@@ -16,16 +16,16 @@ namespace conffandauthh.Controllers
             return View();
         }
 
-
-        public void Add(HistoryModel History)
+        [HttpPost]
+        public void Add(string content, string roomname)
         {
             using (var db = new conferenceEntities2())
             {
                 var his = db.Set<ChatHistory>();
-                var roomid = db.Rooms.First(r => r.name == History.roomname).roomId;
+                var roomid = db.Rooms.First(r => r.name == roomname).roomId;
 
 
-                ChatHistory chat = new ChatHistory { userId = User.Identity.GetUserId(), oldRoomId = roomid, content = History.content };
+                ChatHistory chat = new ChatHistory { userId = User.Identity.GetUserId(), oldRoomId = roomid, content = content };
                 his.Add(chat);
                 db.SaveChanges();
 
