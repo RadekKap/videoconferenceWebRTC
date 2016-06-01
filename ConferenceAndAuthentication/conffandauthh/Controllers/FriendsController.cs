@@ -8,6 +8,7 @@ using System.Web.Mvc;
 
 namespace conffandauthh.Controllers
 {
+    // TODO: sprawdzanie czy pokój nie został usunięty
     public class FriendsController : MainController
     {
         // GET: Friends
@@ -81,6 +82,9 @@ namespace conffandauthh.Controllers
         {
             ApplicationUser user = getUser();
             string response = "";
+            // adres serwera
+            string url = Request.Url.Host;
+
             using (var db = new conferenceEntities2())
             {
                 // pobieranie zaproszeń do pokoju
@@ -98,7 +102,10 @@ namespace conffandauthh.Controllers
                     string inviterName = users.First(u => u.Id == ri.inviterId).UserName;
                     var room = db.Rooms.First(r => r.roomId == ri.roomId);
                     string msg = "Użytkownik <b>" + inviterName + "</b> zaprosił Cię do pokoju <b>" + room.name + "</b><br />"
-                        + "Link do pokoju: "+room.name+"<br />" + "Hasło: "+room.roomPassword+"<br />";
+                        + "Link do pokoju: " + url + "/?" + room.name + "<br />" + "Hasło: " + room.roomPassword + "<br />"
+                        + "<form action = \"/?" + room.name + "\" method = \"post\"><input type=\"text\" value=\""
+                        + room.roomPassword + "\" name = \"password\"><input type = \"submit\" value = \"Dołącz\"></form>";
+
                     response += msg;
                 }//foreach
             }//using
