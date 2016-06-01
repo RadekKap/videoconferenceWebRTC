@@ -79,7 +79,31 @@ namespace conffandauthh.Controllers
 
         public string roomInvite()
         {
-            return "roomInvite";
-        }
+            ApplicationUser user = getUser();
+            string response = "";
+            using (var db = new conferenceEntities2())
+            {
+                // pobieranie zaproszeń do pokoju
+                var allRoomInvitations = db.Set<RoomsInvitations>();
+                RoomsInvitations[] myRoomInvitations = (from invitation in allRoomInvitations
+                                                        where invitation.invitee == user.Id
+                                                        select invitation).ToArray();
+
+                // lista wszystkich użytkowników
+                ApplicationDbContext adb = new ApplicationDbContext();
+                var users = adb.Users.ToArray();
+
+                foreach (RoomsInvitations ri in myRoomInvitations)
+                {
+                    string inviterName = users.First(u => u.Id == ri.inviterId).UserName;
+                    var room = db.Rooms.First(r => r.roomId == ri.roomId);
+                    string msg = "Użytkownik <b>" + inviterName + "</b> zaprosił Cię do pokoju <b>" + room.name + "</b><br />"
+                        + "Link do pokoju: "+room.name+"<br />" + "Hasło: "+room.roomPassword+"<br />";
+                    response += msg;
+                }//foreach
+            }//using
+
+            return response;
+        }//roomInvite()
     }
 }
