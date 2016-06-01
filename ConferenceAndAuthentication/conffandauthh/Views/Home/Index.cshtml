@@ -132,7 +132,10 @@
                 var d = $('#displayname').val()+"," + $('#message').val();
                 webrtc.sendDirectlyToAll('hark', 'chat', d);
                 display($('#displayname').val(), $('#message').val());
-
+                var tresc = $('#message').val();
+                room = location.search && location.search.split('?')[1];
+                $.post('https://' + location.host + '/History/Add', { content: tresc, roomname: room });
+     
                 // Clear text box and reset focus for next comment.
                 $('#message').val('').focus();
             });

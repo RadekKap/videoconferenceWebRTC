@@ -11,6 +11,10 @@ IF OBJECT_ID('Rooms') IS NOT NULL
 DROP TABLE Rooms;
 IF OBJECT_ID('OldRooms') IS NOT NULL
 DROP TABLE OldRooms;
+IF OBJECT_ID('Invitation') IS NOT NULL
+DROP TABLE Invitation;
+IF OBJECT_ID('RoomsInvitations') IS NOT NULL
+DROP TABLE RoomsInvitations;
 
 -- tworzenie tabel
 
@@ -53,11 +57,20 @@ Create table ChatHistory(
 );
 
 -- znajomi
-Create table Friends (
+Create table Friends( 
+	Id_Friends int Primary key Identity(1,1),
 	firstUserId nvarchar(128) references AspNetUsers(Id),
-	secondUserId nvarchar(128) references AspNetUsers(Id),
-	Primary Key (firstUserId,secondUserId)
+	secondUserId nvarchar(128) references AspNetUsers(Id)
 );
+
+
+Create table Invitation (
+    Id_Invitation int Primary key Identity(1,1),
+	firstUserId nvarchar(128) references AspNetUsers(Id),
+	secondUserId nvarchar(128) references AspNetUsers(Id)
+);
+
+
 
 -- zaproszenia do pokojów
 CREATE TABLE RoomsInvitations (
@@ -67,6 +80,7 @@ CREATE TABLE RoomsInvitations (
 	roomId INT REFERENCES Rooms(roomId)
 );
 
+
 -- sprawdzanie poprawnoœci utworzenia tabel
 SELECT * FROM Rooms;
 SELECT * FROM UsersInRoom;
@@ -74,3 +88,4 @@ SELECT * FROM OldRooms;
 SELECT * FROM UsersInOldRoom;
 SELECT * FROM ChatHistory;
 SELECT * FROM Friends;
+SELECT * FROM Invitation;
