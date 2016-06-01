@@ -18,6 +18,7 @@ namespace conffandauthh.Models
         public Rooms()
         {
             this.UsersInRoom = new HashSet<UsersInRoom>();
+            this.RoomsInvitations = new HashSet<RoomsInvitations>();
         }
     
         public int roomId { get; set; }
@@ -28,5 +29,7 @@ namespace conffandauthh.Models
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<UsersInRoom> UsersInRoom { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<RoomsInvitations> RoomsInvitations { get; set; }
     }
 }

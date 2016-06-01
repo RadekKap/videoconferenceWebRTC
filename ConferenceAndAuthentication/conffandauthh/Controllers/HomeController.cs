@@ -1,4 +1,6 @@
 ﻿using conffandauthh.Models;
+using Microsoft.AspNet.Identity;
+using Microsoft.AspNet.Identity.EntityFramework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,8 +11,6 @@ namespace conffandauthh.Controllers
 {
     public class HomeController : MainController
     {
-        static List<RoomCreateModel> rooms = new List<RoomCreateModel>();
-
         conferenceEntities2 db = new conferenceEntities2();
 
         public ActionResult Index(string password)
@@ -24,7 +24,7 @@ namespace conffandauthh.Controllers
             {
 
             }
-            
+
 
             try
             {
@@ -48,27 +48,107 @@ namespace conffandauthh.Controllers
             return View();
         }
 
+        /// <summary>
+        /// Sprawdzanie czy podane hasło pasuje do hasła pokoju.
+        /// </summary>
+        /// <param name="roomName">Nazwa pokoju</param>
+        /// <param name="password">Hasło</param>
+        /// <returns>true - hasło poprawne, false - niepoprawne</returns>
         private bool checkPass(string roomName, string password)
         {
             try
             {
-                RoomCreateModel room = rooms.First(r => r.name == roomName && r.password == password);
-                if (room != null)
-                    return true;
+                using (var db = new conferenceEntities2())
+                {
+                    Rooms room = db.Rooms.First(r => r.name == roomName && r.roomPassword == password);
+                }//using
+                return true;
             }//try
             catch (InvalidOperationException)
             {
                 return false;
             }//catch
+        }//checkPass()
+
+        /// <summary>
+        /// Tworzenie pokoju.
+        /// </summary>
+        /// <param name="room">Pokój do utworzenia.</param>
+        /// <returns>String "ok" po wykonaniu.</returns>
+        [HttpPost]
+        public string createRoom(RoomCreateModel room)
+        {
+            // pobieranie danych o użytkowniku wykonującym zapytanie
+            ApplicationUser user = getUser();
+
+            // sprawdzanie czy pokój o tej nazwie już istnieje
+            //if (!checkRoomName(room.name))
+                //return "fail";
+
+            // tworzenie obiektów, które zostaną dodane do bazy
+            Rooms roomToAdd = new Rooms()
+            {
+                creationDate = DateTime.Now,
+                name = room.name,
+                ownerId = user.Id,
+                roomPassword = room.password
+            };
+
+            OldRooms oldRoomToAdd = new OldRooms()
+            {
+                ownerId = roomToAdd.ownerId,
+                creationDate = roomToAdd.creationDate
+            };
+
+            // dodawanie pokoju do bazy
+            while (!addRoom(roomToAdd, oldRoomToAdd)) ;
+
+            return "ok";
+        }//createRoom()
+
+        private bool addRoom(Rooms roomToAdd, OldRooms oldRoomToAdd)
+        {
+            using (var db = new conferenceEntities2())
+            {
+                var rooms = db.Set<Rooms>();
+                var oldRooms = db.Set<OldRooms>();
+
+                // dodwanie pokojów do bazy
+                rooms.Add(roomToAdd);
+                oldRooms.Add(oldRoomToAdd);
+                db.SaveChanges();
+
+                int roomId = roomToAdd.roomId;
+                int oldRoomId = oldRoomToAdd.oldRoomId;
+                if (roomId == oldRoomId)
+                    return true;
+
+                // usuwanie pokojów z bazy jeśli mają inne id
+                rooms.Remove(roomToAdd);
+                oldRooms.Remove(oldRoomToAdd);
+                db.SaveChanges();
+            }//using
 
             return false;
-        }
+        }//addRoom()
 
-        [HttpPost]
-        public void createRoom(RoomCreateModel room)
+        private bool checkRoomName(string name)
         {
-            rooms.Add(room);
-        }
+            try
+            {
+                using (var db = new conferenceEntities2())
+                {
+                    var rooms = db.Set<Rooms>();
+                    rooms.First(r => r.name == name);
+                }//using
+            }//try
+            catch (InvalidOperationException)
+            {
+                return true;
+            }//catch
+
+            return false;
+        }//checkRoomName()
 
         public ActionResult About()
         {
