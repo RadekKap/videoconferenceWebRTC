@@ -13,7 +13,8 @@ IF OBJECT_ID('OldRooms') IS NOT NULL
 DROP TABLE OldRooms;
 IF OBJECT_ID('Invitation') IS NOT NULL
 DROP TABLE Invitation;
-
+IF OBJECT_ID('RoomsInvitations') IS NOT NULL
+DROP TABLE RoomsInvitations;
 
 -- tworzenie tabel
 
