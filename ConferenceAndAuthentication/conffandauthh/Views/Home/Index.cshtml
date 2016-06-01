@@ -10,7 +10,9 @@
 
 @if (Request.IsAuthenticated)
 {
-    
+        <div id="notifications">
+            <h3>Powiadomienia</h3>
+        </div>
         <h3 id="title">Utwórz pokój</h3>
         <form id="createRoom">
             Nazwa pokoju: <input id="sessionInput" /><br />
@@ -18,6 +20,15 @@
             <button disabled type="submit">Stwórz nowy pokój</button>
         </form>
         <p id="subTitle"></p>
+
+        // zapraszanie znajomego do pokoju
+        <div id="addFriend">
+            Dodaj znajomego.<br />
+            Wprowadź nick znajomego, którego chcesz zaprosić do rozmowy: <input id="friendName" />
+            <button type="button" id="addFriendButton">Zaproś</button>
+            <p id="sendedRoomInvitation" style="display:inline"></p>
+        </div>
+
         <div>
             <button id="screenShareButton"></button>
             <p>
@@ -52,6 +63,44 @@
             // grab the room from the URL
             var room = location.search && location.search.split('?')[1];
 
+            // ukrywanie forularza do zapraszania przyjaciół
+            $("#addFriend").hide();
+
+            // wysyłanie zaproszenia
+            $('#addFriendButton').click(function () {
+                var friendname = $('#friendName').val();
+                $('#addFriendButton').attr("disabled", true);
+                $('#sendedRoomInvitation').text('Wysyłanie zaproszenia...');
+                room = location.search && location.search.split('?')[1];
+
+                $.ajax({url: 'https://' + location.host + '/Friends/inviteToRoom',
+                    type: 'POST', 
+                    data: { username: friendname, roomname: room },
+                    success: function(data) {
+                        $('#sendedRoomInvitation').text(data);
+                        $('#addFriendButton').attr("disabled", false);
+                    }
+                });
+                $('#friendName').val('').focus();
+            });
+
+            // sprawdzanie zaproszeń do pokojów
+            var interval = 3000;  // 3 sekundy
+            function checkRoomInvitations() {
+                $.ajax({
+                    type: 'GET',
+                    url: 'https://' + location.host + '/Friends/roomInvite',
+                    success: function (data) {
+                        console.log(data);
+                        $('#notifications').html('<h3>Powiadomienia</h3>'+data);
+                    },
+                    complete: function (data) {
+                        // Schedule the next
+                        setTimeout(checkRoomInvitations, interval);
+                    }
+                });
+            }
+            setTimeout(checkRoomInvitations, interval);
 
             // create our webrtc connection
             var webrtc = new SimpleWebRTC({
@@ -122,7 +171,7 @@
 
             // we got access to the camera
             webrtc.on('localStream', function (stream) {
-                var button = document.querySelector('form>button');
+                var button = document.querySelector('#createRoom>button');
                 if (button) button.removeAttribute('disabled');
                 $('#localVolume').show();
             });
@@ -250,12 +299,15 @@
                 document.getElementById('title').innerText = 'Pokój: ' + name;
                 document.getElementById('subTitle').innerText =  'Link do pokoju: ' + location.href;
                 $('body').addClass('active');
+
+                // pokazywanie formularza dodawania znajomego
+                $("#addFriend").show();
             }
 
             if (room) {
                 setRoom(room);
             } else {
-                $('form').submit(function () {
+                $('#createRoom').submit(function () {
                     var val = $('#sessionInput').val().toLowerCase().replace(/\s/g, '-').replace(/[^A-Za-z0-9_\-]/g, '');
                     var pass = $('#passwordInput').val();
                     $.post('https://' + location.host + '/Home/createRoom', { name: val, password: pass });

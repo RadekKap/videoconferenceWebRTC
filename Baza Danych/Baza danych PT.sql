@@ -62,10 +62,21 @@ Create table Friends(
 	secondUserId nvarchar(128) references AspNetUsers(Id)
 );
 
+
 Create table Invitation (
     Id_Invitation int Primary key Identity(1,1),
 	firstUserId nvarchar(128) references AspNetUsers(Id),
 	secondUserId nvarchar(128) references AspNetUsers(Id)
+);
+
+
+
+-- zaproszenia do pokojów
+CREATE TABLE RoomsInvitations (
+	invitationId INT PRIMARY KEY IDENTITY(1,1),
+	inviterId NVARCHAR(128) REFERENCES AspNetUsers(Id),
+	invitee NVARCHAR(128) REFERENCES AspNetUsers(Id),
+	roomId INT REFERENCES Rooms(roomId)
 );
 
 
