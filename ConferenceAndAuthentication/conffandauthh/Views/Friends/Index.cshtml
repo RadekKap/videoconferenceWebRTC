@@ -26,7 +26,7 @@
 
 
     var yourJavaScriptArray = @Html.Raw(Json.Encode(Model.ListFriends));
-    var memquery;
+   
 
     function search() {
        
@@ -44,11 +44,12 @@
             //Do something
         }
 
-        $(document).on("click", ".buttons", function(){ 
-            var toRemove = $(this).parent();
+        $(document).on("click", ".buttons", function(event){ 
+           
+            event.stopImmediatePropagation();
             var myValue = $(this).prev().html();
-         
-            console.log("Email: " + myValue);
+            var memquery= $('#emailInput').val();;
+            console.log("Email: " + myValue + em);
             $.post('https://' + location.host + '/Friends/Index', { Email: myValue , ListFriends: yourJavaScriptArray }, function(data, status){
                
                 for (var i=yourJavaScriptArray.length-1; i>=0; i--) {
@@ -60,12 +61,14 @@
                
                 document.getElementById('friendsarea').innerHTML = "";
                 for (var i = 0; i <yourJavaScriptArray.length; i++) {
-                    if (yourJavaScriptArray[i].indexOf(em) !=-1) {
+                    if (yourJavaScriptArray[i].indexOf(memquery) !=-1) {
                         $('#friendsarea').append('<strong>'+yourJavaScriptArray[i]+'</strong>'
               + '&nbsp;&nbsp; <button class = "buttons" name = "ltrContainer" >'+'Zaproś'+'</button>'+'<br/>');
                     }}
               
                 alert('Zaproszenie zostało wysłane do: '+myValue); 
+
+
                 // alert("Data: " + data + "\nStatus: " + status);
             });
            

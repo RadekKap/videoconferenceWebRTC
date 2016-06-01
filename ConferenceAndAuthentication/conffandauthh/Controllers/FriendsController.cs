@@ -11,12 +11,13 @@ namespace conffandauthh.Controllers
     public class FriendsController : MainController
     {
         static List<string> ListF = new List<string>();
-        ApplicationDbContext dbcont = new ApplicationDbContext();
-        conferenceEntities2 db = new conferenceEntities2();
+     
+        
 
         // GET: Friends
         public ActionResult Index()
         {
+            ApplicationDbContext dbcont = new ApplicationDbContext();
             SearchFriendModel model = new SearchFriendModel();
             var allusers = dbcont.Users.ToArray();
             
@@ -24,37 +25,46 @@ namespace conffandauthh.Controllers
             ApplicationUser user = getUser();
             int pom = 0;
 
-            var find = from docs in db.Invitation where docs.firstUserId == user.Id select docs;
-
-            var invitations = find.ToArray();
-
-            model.ListFriends = new string[allusers.Count() - 1 - invitations.Count()];
-            int licz = 0;
-            foreach (var x in allusers)
+            using (var db = new conferenceEntities2())
             {
-                licz = 0;
-                if (!x.Email.Equals(user.Email.ToString()))
-                {
+                var find = from docs in db.Invitation where docs.firstUserId == user.Id select docs;
 
-                    while (invitations.Count() != licz)
+                var invitations = find.ToArray();
+
+                model.ListFriends = new string[allusers.Count() - 1 - invitations.Count()];
+                int licz = 0;
+                foreach (var x in allusers)
+                {
+                    licz = 0;
+                    if (!x.Email.Equals(user.Email.ToString()))
                     {
-                        if (!invitations[licz].secondUserId.Equals(x.Id))
+
+                        if (invitations.Count() != 0)
                         {
-                            if (licz == invitations.Count() - 1)
+                            while (invitations.Count() != licz)
                             {
-                                model.ListFriends.SetValue(x.Email, pom);
-                                pom++;
+                                if (!invitations[licz].secondUserId.Equals(x.Id))
+                                {
+                                    if (licz == invitations.Count() - 1)
+                                    {
+                                        model.ListFriends.SetValue(x.Email, pom);
+                                        pom++;
+                                    }
+                                }
+                                else
+                                    break;
+                                licz++;
                             }
+                        }else
+                        {
+                            model.ListFriends.SetValue(x.Email, pom);
+                            pom++;
                         }
-                        else
-                            break;
-                        licz++;
                     }
+
                 }
 
             }
-
-            
 
             return View(model);
         }
@@ -62,21 +72,9 @@ namespace conffandauthh.Controllers
         [HttpPost]
         public ActionResult Index(SearchFriendModel F)
         {
+            ApplicationDbContext dbcont = new ApplicationDbContext();
 
-           string[] tab= new string[F.ListFriends.Count() - 1];
-
-            int y = 0;
-            foreach (var x in F.ListFriends)
-            {
-                if (!x.Equals(F.Email))
-                {
-                   tab.SetValue(x, y);
-                    y++;
-                }
-
-            }
-            F.ListFriends = tab;
-
+        
             ApplicationUser user = getUser();
             var allusers = dbcont.Users.ToArray();
             var inviteeID=allusers[0].Id;
@@ -96,9 +94,11 @@ namespace conffandauthh.Controllers
                 secondUserId = inviteeID
             };
 
-            db.Invitation.Add(invitetoAdd);
-            db.SaveChanges();
-
+            using (var db = new conferenceEntities2())
+            {
+                db.Invitation.Add(invitetoAdd);
+                db.SaveChanges();
+            }
             return View(F);
         }
 
