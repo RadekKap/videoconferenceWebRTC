@@ -10,7 +10,9 @@
 
 @if (Request.IsAuthenticated)
 {
-    
+        <div id="notifications">
+            <h3>Powiadomienia</h3>
+        </div>
         <h3 id="title">Utwórz pokój</h3>
         <form id="createRoom">
             Nazwa pokoju: <input id="sessionInput" /><br />
@@ -82,6 +84,22 @@
                 $('#friendName').val('').focus();
             });
 
+            // sprawdzanie zaproszeń do pokojów
+            var interval = 3000;  // 3 sekundy
+            function checkRoomInvitations() {
+                $.ajax({
+                    type: 'GET',
+                    url: 'https://' + location.host + '/Friends/roomInvite',
+                    success: function (data) {
+                        $('#notifications').html('<h3>Powiadomienia</h3>'+data);
+                    },
+                    complete: function (data) {
+                        // Schedule the next
+                        setTimeout(checkRoomInvitations, interval);
+                    }
+                });
+            }
+            setTimeout(checkRoomInvitations, interval);
 
             // create our webrtc connection
             var webrtc = new SimpleWebRTC({

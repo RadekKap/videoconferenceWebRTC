@@ -76,5 +76,10 @@ namespace conffandauthh.Controllers
                 }//catch
             }//using
         }//inviteToRoom()
+
+        public string roomInvite()
+        {
+            return "roomInvite";
+        }
     }
 }
