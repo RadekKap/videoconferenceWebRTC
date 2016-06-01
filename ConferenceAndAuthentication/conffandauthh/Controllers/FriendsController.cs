@@ -8,7 +8,7 @@ using System.Web.Mvc;
 
 namespace conffandauthh.Controllers
 {
-    public class FriendsController : Controller
+    public class FriendsController : MainController
     {
         static List<string> ListF = new List<string>();
         ApplicationDbContext dbcont = new ApplicationDbContext();
@@ -29,18 +29,26 @@ namespace conffandauthh.Controllers
             var invitations = find.ToArray();
 
             model.ListFriends = new string[allusers.Count() - 1 - invitations.Count()];
-
+            int licz = 0;
             foreach (var x in allusers)
             {
+                licz = 0;
                 if (!x.Email.Equals(user.Email.ToString()))
                 {
-                    foreach (var inv in invitations)
+
+                    while (invitations.Count() != licz)
                     {
-                        if (!inv.secondUserId.Equals(x.Id))
+                        if (!invitations[licz].secondUserId.Equals(x.Id))
                         {
-                            model.ListFriends.SetValue(x.Email, pom);
-                            pom++;
+                            if (licz == invitations.Count() - 1)
+                            {
+                                model.ListFriends.SetValue(x.Email, pom);
+                                pom++;
+                            }
                         }
+                        else
+                            break;
+                        licz++;
                     }
                 }
 
