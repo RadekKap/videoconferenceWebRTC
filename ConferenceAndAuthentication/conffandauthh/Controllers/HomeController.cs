@@ -33,7 +33,22 @@ namespace conffandauthh.Controllers
                 string[] splitedUrl = url.Split('?');
                 string roomName = splitedUrl[1];
                 if (checkPass(roomName, password))
+                {
+                    using (var db = new conferenceEntities2())
+                    {
+                        int roomId = db.Rooms.First(r => r.name == roomName).roomId;
+                        var invitationsArray = (from invit in db.RoomsInvitations
+                                               where invit.invitee == user.Id && invit.roomId==roomId
+                                               select invit).ToArray();
+                        foreach(var i in invitationsArray)
+                        {
+                            db.RoomsInvitations.Remove(i);
+                        }//foreach
+                        db.SaveChanges();
+                    }//using
+
                     return View();
+                }//if
 
                 ViewBag.roomName = roomName;
                 ViewBag.pass = password;
