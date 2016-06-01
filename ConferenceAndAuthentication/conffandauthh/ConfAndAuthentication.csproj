@@ -211,6 +211,7 @@
     <Compile Include="Models\Rooms.cs">
       <DependentUpon>Baza Danych.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\SearchFriendModel.cs" />
     <Compile Include="Models\UsersInOldRoom.cs">
       <DependentUpon>Baza Danych.tt</DependentUpon>
     </Compile>
