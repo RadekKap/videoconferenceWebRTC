@@ -62,3 +62,21 @@ $('#notifications').on('click', '#deleteInvitationButton', function () {
         }
     });
 });
+
+$('#friendsTable').on('click', '#addThisFriend', function () {
+    var friendname = this.value;
+    var myroom = location.search && location.search.split('?')[1];
+    $(this).attr("disabled", true);
+
+    $.ajax({
+        url: 'https://' + hostname + '/Friends/inviteToRoom',
+        type: 'POST',
+        data: { username: friendname, roomname: myroom },
+        success: function () {
+            // TODO: poinformowanie użytkownika lub usunięcie krotki
+        },
+        error: function () {
+           $(this).attr("disabled", false);
+        }
+    });
+});

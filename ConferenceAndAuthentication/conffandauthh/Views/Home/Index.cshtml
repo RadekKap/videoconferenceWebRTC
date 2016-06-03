@@ -17,7 +17,7 @@
                 <tr>
                     <td>
                         @Html.DisplayFor(modelItem => item.Email)
-                        <button type="button" value=item.Email>Zaproś</button>
+                        <button id="addThisFriend" type="button" value=@Html.DisplayFor(modelItem => item.Email)>Zaproś</button>
                     </td>
                 </tr>
             }
