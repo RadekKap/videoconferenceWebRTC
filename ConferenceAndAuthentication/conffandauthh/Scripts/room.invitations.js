@@ -27,13 +27,17 @@ $('#addFriendButton').click(function () {
 
 // sprawdzanie zaproszeń do pokojów
 var interval = 3000;  // 3 sekundy
+var lastData; // zmienna pomicnicza przy aktualizacji danych
 function checkRoomInvitations() {
     $.ajax({
         type: 'GET',
         url: 'https://' + hostname + '/Friends/roomInvite',
         success: function (data) {
-            console.log(data);
-            $('#notifications').html('<h3>Powiadomienia</h3>' + data);
+            if (data != lastData) {
+                console.log(data);
+                $('#notifications').html('<h3>Powiadomienia</h3>' + data);
+                lastData = data;
+            }
         },
         complete: function (data) {
             // zaplanowanie kolejnego sprawdzenia
@@ -41,20 +45,19 @@ function checkRoomInvitations() {
         }
     });
 }
-setTimeout(checkRoomInvitations, interval);
+var timer = setTimeout(checkRoomInvitations, interval);
 
 // usuwanie zaproszenia do pokoju na żądanie zapraszanego
 $('#notifications').on('click', '#deleteInvitationButton', function () {
     var roomname = this.value;
-    $('#roomInvite'+roomname).hide();
+    $('#roomInvite' + roomname).hide();
     $.ajax({
         type: 'POST',
         url: 'https://' + hostname + '/Friends/delRoomInvite',
         data: { roomname: roomname },
         success: function () {
             console.log("Usunięto zaproszenie do pokoju " + roomname);
-            //$('#deleteInvitationButton').show();
-            checkRoomInvitations();
+            //timer = setTimeout(checkRoomInvitations, interval);
         }
     });
 });
