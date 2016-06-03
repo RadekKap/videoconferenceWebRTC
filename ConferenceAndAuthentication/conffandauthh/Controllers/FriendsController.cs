@@ -189,7 +189,8 @@ namespace conffandauthh.Controllers
                     string msg = "Użytkownik <b>" + inviterName + "</b> zaprosił Cię do pokoju <b>" + room.name + "</b><br />"
                         + "Link do pokoju: " + url + "/?" + room.name + "<br />" + "Hasło: "
                         + "<form style='display:inline' action = \"/?" + room.name + "\" method = \"post\"><input type=\"password\" value=\""
-                        + room.roomPassword + "\" name = \"password\"><input type = \"submit\" value = \"Dołącz\"></form>";
+                        + room.roomPassword + "\" name = \"password\"><input type = \"submit\" value = \"Dołącz\"></form>"
+                        + "<button type=\"button\" value=\""+room.name+"\" id=\"deleteInvitationButton\">Usuń</button><br />";
 
                     response += msg;
                 }//foreach

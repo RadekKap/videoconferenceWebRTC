@@ -29,7 +29,7 @@ function checkRoomInvitations() {
         type: 'GET',
         url: 'https://' + location.host + '/Friends/roomInvite',
         success: function (data) {
-            console.log(data);
+            //console.log(data);
             $('#notifications').html('<h3>Powiadomienia</h3>' + data);
         },
         complete: function (data) {
@@ -39,3 +39,8 @@ function checkRoomInvitations() {
     });
 }
 setTimeout(checkRoomInvitations, interval);
+
+$('#notifications').on('click', '#deleteInvitationButton', function () {
+    console.log(this.value);
+    //console.log('click');
+});
