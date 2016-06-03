@@ -1,7 +1,93 @@
-﻿
+﻿@model conffandauthh.Models.SearchFriendModel
+
 @{
-    ViewBag.Title = "Index";
+    ViewBag.Title = "Znajomi";
+
+
 }
 
-<h2>Index</h2>
+@if (Request.IsAuthenticated)
+{
 
+
+<h2>Wyszukaj znajomego</h2>
+
+   <p>Podaj email: <input id="emailInput" /></p> 
+    <button onclick="search()">Szukaj</button>
+
+
+    <br/>
+    <br />
+<div id="friendsarea">
+
+</div>
+
+<script>
+
+
+    var yourJavaScriptArray = @Html.Raw(Json.Encode(Model.ListFriends));
+    var memquery;
+
+    function search() {
+       
+        document.getElementById('friendsarea').innerHTML = "";
+
+        var em = $('#emailInput').val();
+      
+        for (var i = 0; i <yourJavaScriptArray.length; i++) {
+            if (yourJavaScriptArray[i].indexOf(em) !=-1) {
+                $('#friendsarea').append('<strong>'+yourJavaScriptArray[i]+'</strong>'
+           + '&nbsp;&nbsp; <button class = "buttons" name = "ltrContainer" >'+'Zaproś'+'</button>'+'<br/>');
+            }
+
+         
+            //Do something
+        }
+
+        $(document).on("click", ".buttons", function(){ 
+            var toRemove = $(this).parent();
+            var myValue = $(this).prev().html();
+         
+            console.log("Email: " + myValue);
+            $.post('https://' + location.host + '/Friends/Index', { Email: myValue , ListFriends: yourJavaScriptArray }, function(data, status){
+               
+                for (var i=yourJavaScriptArray.length-1; i>=0; i--) {
+                    if (yourJavaScriptArray[i] === myValue) {
+                        yourJavaScriptArray.splice(i, 1);
+                        // break;       //<-- Uncomment  if only the first term has to be removed
+                    }
+                }
+               
+                document.getElementById('friendsarea').innerHTML = "";
+                for (var i = 0; i <yourJavaScriptArray.length; i++) {
+                    if (yourJavaScriptArray[i].indexOf(em) !=-1) {
+                        $('#friendsarea').append('<strong>'+yourJavaScriptArray[i]+'</strong>'
+              + '&nbsp;&nbsp; <button class = "buttons" name = "ltrContainer" >'+'Zaproś'+'</button>'+'<br/>');
+                    }}
+              
+                alert('Zaproszenie zostało wysłane do: '+myValue); 
+                // alert("Data: " + data + "\nStatus: " + status);
+            });
+           
+        });
+        
+   
+       
+        // Add the message to the page.
+       
+    }
+
+
+
+   
+</script>
+}
+else
+{
+    <div class="jumbotron">
+        <h1>Wideo-Konferencje</h1>
+        <p class="lead">Aby korzystać z usług naszego serwisu musisz się zarejestrować lub zalogować na istniejące konto</p>
+        <p><a class="btn btn-default" href=@Url.Action("Register", "Account")>Rejestracja</a></p>
+        <p><a class="btn btn-default" href=@Url.Action("Login", "Account")>Zaloguj</a></p>
+    </div>
+}
