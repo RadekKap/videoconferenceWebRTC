@@ -11,7 +11,14 @@
 @if (Request.IsAuthenticated)
 {
     @model IEnumerable<conffandauthh.Models.SearchFriendModel>
+    // zapraszanie innych osób do pokoju
+    
+        // lista znajomych
+        
         <table id="friendsTable">
+            <tr>
+                <td>Zaproś znajomego do rozmowy</td>
+            </tr>
             @foreach (var item in Model)
             {
                 <tr>
@@ -22,6 +29,13 @@
                 </tr>
             }
         </table>
+        // dodawanie przy pomocy email
+        <div id="addFriend">
+            Możesz także wprowadzić email osoby, którą chcesz zaprosić do rozmowy: <input id="friendName" />
+            <button type="button" id="addFriendButton">Zaproś</button>
+            <p id="sendedRoomInvitation" style="display:inline"></p>
+        </div>
+
         <div id="notifications">
             <h3>Powiadomienia</h3>
         </div>
@@ -32,14 +46,6 @@
             <button disabled type="submit">Stwórz nowy pokój</button>
         </form>
         <p id="subTitle"></p>
-
-        // zapraszanie znajomego do pokoju
-        <div id="addFriend">
-            Dodaj znajomego.<br />
-            Wprowadź nick znajomego, którego chcesz zaprosić do rozmowy: <input id="friendName" />
-            <button type="button" id="addFriendButton">Zaproś</button>
-            <p id="sendedRoomInvitation" style="display:inline"></p>
-        </div>
 
         <div>
             <button id="screenShareButton"></button>
