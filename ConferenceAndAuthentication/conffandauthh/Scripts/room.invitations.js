@@ -41,6 +41,12 @@ function checkRoomInvitations() {
 setTimeout(checkRoomInvitations, interval);
 
 $('#notifications').on('click', '#deleteInvitationButton', function () {
-    console.log(this.value);
-    //console.log('click');
+    $.ajax({
+        type: 'POST',
+        url: 'https://' + location.host + '/Friends/delRoomInvite',
+        data: { roomname: this.value },
+        success: function (data) {
+            console.log("Usunięto zaproszenie do pokoju "+this.value);
+        }
+    });
 });

@@ -198,5 +198,20 @@ namespace conffandauthh.Controllers
 
             return response;
         }//roomInvite()
+
+        [HttpPost]
+        public void delRoomInvite(string roomname)
+        {
+            ApplicationUser user = getUser();
+
+            using (var db = new conferenceEntities2())
+            {
+                var roomIdToDel = db.Rooms.First(r => r.name == roomname).roomId;
+                var invToDel = db.RoomsInvitations.First(i => i.roomId == roomIdToDel && i.invitee == user.Id);
+
+                db.RoomsInvitations.Remove(invToDel);
+                db.SaveChanges();
+            }//using
+        }//delRoomInvite()
     }
 }
