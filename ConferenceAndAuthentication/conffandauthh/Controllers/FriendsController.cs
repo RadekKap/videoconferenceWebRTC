@@ -8,6 +8,7 @@ using System.Web.Mvc;
 
 namespace conffandauthh.Controllers
 {
+    [Authorize]
     public class FriendsController : MainController
     {
         static List<string> ListF = new List<string>();
