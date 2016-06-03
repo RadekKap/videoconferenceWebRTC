@@ -47,7 +47,9 @@ namespace conffandauthh.Controllers
                         db.SaveChanges();
                     }//using
 
-                    return View();
+                    List<SearchFriendModel> friends = getFriends(getUser());
+
+                    return View(friends);
                 }//if
 
                 ViewBag.roomName = roomName;
@@ -60,8 +62,39 @@ namespace conffandauthh.Controllers
                 // nic nie rób
             }
 
+            if (getUser() != null)
+            {
+                List<SearchFriendModel> model = getFriends(getUser());
+                return View(model);
+            }//if
+
             return View();
         }
+
+        private List<SearchFriendModel> getFriends(ApplicationUser applicationUser)
+        {
+            using(var db = new conferenceEntities2())
+            {
+                ApplicationUser[] users;
+                using (ApplicationDbContext adb = new ApplicationDbContext()) {
+                    users = adb.Users.ToArray();
+                }//using
+
+                var friendIdsList = (from friend in db.Friends
+                                  where friend.firstUserId == applicationUser.Id
+                                  select friend.secondUserId).ToList();
+
+                List<SearchFriendModel> friendsCustomList = new List<SearchFriendModel>();
+
+                foreach(var friendId in friendIdsList)
+                {
+                    string username = users.First(u => u.Id == friendId).UserName;
+                    friendsCustomList.Add(new SearchFriendModel { Email = username });
+                }//foreach
+
+                return friendsCustomList;
+            }//using
+        }//getFriends()
 
         /// <summary>
         /// Sprawdzanie czy podane hasło pasuje do hasła pokoju.
