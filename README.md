@@ -2,20 +2,28 @@
 
 Projekt z przedmiotu Podstawy Teleinformatyki.
 
-### Co jest? ###
+### Funkcjonalności ###
 
  * Tworzenie pokojów
  * Dołączanie do pokojów
  * Rozmowy wideo między wieloma użytkownikami w jednym pokoju
  * Przesyłanie plików
-
-
-### Co było planowane? ###
-
  * Czat tekstowy
  * Współdzielenie ekranu
  * Zabezpieczanie pokojów hasłami
- * Administrator pokoju
 
 
-### Co można dodać? ###
+### Do zrobienia ###
+
+ * Użytkownik musi podać nazwę pokoju
+ * Sprawdzanie czy pokój o podanej nazwie istnieje
+ * Usuwanie nieaktywnych pokojów z tabeli aktywne
+ * Sprawdzanie adresu email
+ * Zmiana wyświetlania adresu email na nick
+ * Instalacja wtyczek do konfiguracji udostępniania pokoju w Chrome
+ * Automatyczne dodwanie adresu do białej listy w Firefox
+ * Ukrycie czatu zaraz po zalogowaniu (powinien być widoczny dopiero w pokoju)
+ * Problem z pustymi hasłami do pokojów
+ * Usuwanie zaproszenia do nieaktywnego pokoju (to pewnie poleci razem z zależnościami do aktywnego pokoju)
+ * Usunięcie zakładki znajomi z strony głównej przed zalogowaniem
+ * Przetestowanie strony pod innymi przeglądarkami i ewentualne poinformowanie użytkowników o potrzebie zmiany przeglądarki
