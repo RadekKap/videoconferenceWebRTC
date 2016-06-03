@@ -59,48 +59,14 @@
         </div>
         <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
         <script src="/Scripts/latest-v2.js"></script>
+        
+        // obsługa dodawania znajomych
+        <script src="~/Scripts/room.add_friend.js"></script>
+
+        // obsługa webrtc
         <script>
-            // grab the room from the URL
+            // pobieranie nazwy pokoju z URL
             var room = location.search && location.search.split('?')[1];
-
-            // ukrywanie forularza do zapraszania przyjaciół
-            $("#addFriend").hide();
-
-            // wysyłanie zaproszenia
-            $('#addFriendButton').click(function () {
-                var friendname = $('#friendName').val();
-                $('#addFriendButton').attr("disabled", true);
-                $('#sendedRoomInvitation').text('Wysyłanie zaproszenia...');
-                room = location.search && location.search.split('?')[1];
-
-                $.ajax({url: 'https://' + location.host + '/Friends/inviteToRoom',
-                    type: 'POST', 
-                    data: { username: friendname, roomname: room },
-                    success: function(data) {
-                        $('#sendedRoomInvitation').text(data);
-                        $('#addFriendButton').attr("disabled", false);
-                    }
-                });
-                $('#friendName').val('').focus();
-            });
-
-            // sprawdzanie zaproszeń do pokojów
-            var interval = 3000;  // 3 sekundy
-            function checkRoomInvitations() {
-                $.ajax({
-                    type: 'GET',
-                    url: 'https://' + location.host + '/Friends/roomInvite',
-                    success: function (data) {
-                        console.log(data);
-                        $('#notifications').html('<h3>Powiadomienia</h3>'+data);
-                    },
-                    complete: function (data) {
-                        // Schedule the next
-                        setTimeout(checkRoomInvitations, interval);
-                    }
-                });
-            }
-            setTimeout(checkRoomInvitations, interval);
 
             // create our webrtc connection
             var webrtc = new SimpleWebRTC({

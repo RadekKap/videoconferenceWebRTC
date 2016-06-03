@@ -27,3 +27,6 @@ Projekt z przedmiotu Podstawy Teleinformatyki.
  * Usuwanie zaproszenia do nieaktywnego pokoju (to pewnie poleci razem z zależnościami do aktywnego pokoju)
  * Usunięcie zakładki znajomi z strony głównej przed zalogowaniem
  * Przetestowanie strony pod innymi przeglądarkami i ewentualne poinformowanie użytkowników o potrzebie zmiany przeglądarki
+ * Przekierowanie na HTTPS
+ * Sprawdzanie czy użytkownik już jest w pokoju do którego jest zapraszany
+ * Usuwanie wideo po rozłączeniu się użytkownika
