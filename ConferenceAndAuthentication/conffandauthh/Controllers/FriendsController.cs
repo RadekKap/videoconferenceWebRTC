@@ -186,11 +186,11 @@ namespace conffandauthh.Controllers
                 {
                     string inviterName = users.First(u => u.Id == ri.inviterId).UserName;
                     var room = db.Rooms.First(r => r.roomId == ri.roomId);
-                    string msg = "Użytkownik <b>" + inviterName + "</b> zaprosił Cię do pokoju <b>" + room.name + "</b><br />"
+                    string msg = "<figure id=\"roomInvite"+room.name+"\">Użytkownik <b>" + inviterName + "</b> zaprosił Cię do pokoju <b>" + room.name + "</b><br />"
                         + "Link do pokoju: " + url + "/?" + room.name + "<br />" + "Hasło: "
                         + "<form style='display:inline' action = \"/?" + room.name + "\" method = \"post\"><input type=\"password\" value=\""
                         + room.roomPassword + "\" name = \"password\"><input type = \"submit\" value = \"Dołącz\"></form>"
-                        + "<button type=\"button\" value=\""+room.name+"\" id=\"deleteInvitationButton\">Usuń</button><br />";
+                        + "<button type=\"button\" value=\""+room.name+ "\" id=\"deleteInvitationButton\">Usuń</button><br /></figure>";
 
                     response += msg;
                 }//foreach

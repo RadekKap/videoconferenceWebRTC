@@ -1,5 +1,8 @@
 ﻿// Dodawanie znajomego do pokoju.
 
+// Zmienne pomocnicze
+var hostname = location.host;
+
 // ukrywanie formularza do zapraszania przyjaciół
 $("#addFriend").hide();
 
@@ -11,7 +14,7 @@ $('#addFriendButton').click(function () {
     var myroom = location.search && location.search.split('?')[1];
 
     $.ajax({
-        url: 'https://' + location.host + '/Friends/inviteToRoom',
+        url: 'https://' + hostname + '/Friends/inviteToRoom',
         type: 'POST',
         data: { username: friendname, roomname: myroom },
         success: function (data) {
@@ -27,9 +30,9 @@ var interval = 3000;  // 3 sekundy
 function checkRoomInvitations() {
     $.ajax({
         type: 'GET',
-        url: 'https://' + location.host + '/Friends/roomInvite',
+        url: 'https://' + hostname + '/Friends/roomInvite',
         success: function (data) {
-            //console.log(data);
+            console.log(data);
             $('#notifications').html('<h3>Powiadomienia</h3>' + data);
         },
         complete: function (data) {
@@ -40,13 +43,18 @@ function checkRoomInvitations() {
 }
 setTimeout(checkRoomInvitations, interval);
 
+// usuwanie zaproszenia do pokoju na żądanie zapraszanego
 $('#notifications').on('click', '#deleteInvitationButton', function () {
+    var roomname = this.value;
+    $('#roomInvite'+roomname).hide();
     $.ajax({
         type: 'POST',
-        url: 'https://' + location.host + '/Friends/delRoomInvite',
-        data: { roomname: this.value },
-        success: function (data) {
-            console.log("Usunięto zaproszenie do pokoju "+this.value);
+        url: 'https://' + hostname + '/Friends/delRoomInvite',
+        data: { roomname: roomname },
+        success: function () {
+            console.log("Usunięto zaproszenie do pokoju " + roomname);
+            //$('#deleteInvitationButton').show();
+            checkRoomInvitations();
         }
     });
 });
