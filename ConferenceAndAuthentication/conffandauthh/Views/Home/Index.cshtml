@@ -11,12 +11,13 @@
 @if (Request.IsAuthenticated)
 {
     @model IEnumerable<conffandauthh.Models.SearchFriendModel>
-        <table class="table">
+        <table id="friendsTable">
             @foreach (var item in Model)
             {
                 <tr>
                     <td>
                         @Html.DisplayFor(modelItem => item.Email)
+                        <button type="button" value=item.Email>Zaproś</button>
                     </td>
                 </tr>
             }
@@ -277,8 +278,9 @@
                 document.getElementById('subTitle').innerText = 'Link do pokoju: ' + location.href;
                 $('body').addClass('active');
 
-                // pokazywanie formularza dodawania znajomego
+                // pokazywanie formularza dodawania znajomego do pokoju i listy znajomych
                 $("#addFriend").show();
+                $("#friendsTable").show();
             }
 
             if (room) {

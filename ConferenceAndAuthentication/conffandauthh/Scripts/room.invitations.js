@@ -3,8 +3,9 @@
 // Zmienne pomocnicze
 var hostname = location.host;
 
-// ukrywanie formularza do zapraszania przyjaciół
+// ukrywanie formularza do zapraszania przyjaciół i listy znajomych
 $("#addFriend").hide();
+$("#friendsTable").hide();
 
 // wysyłanie zaproszenia
 $('#addFriendButton').click(function () {

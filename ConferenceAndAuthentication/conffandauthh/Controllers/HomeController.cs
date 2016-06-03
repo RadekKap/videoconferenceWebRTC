@@ -28,10 +28,12 @@ namespace conffandauthh.Controllers
 
             try
             {
-                //sprawdzanie URL, jeśli nie rzuci wyjątku to znaczy, że użytkownik wszedł do pokoju
+                // sprawdzanie URL, jeśli nie rzuci wyjątku to znaczy, że użytkownik wszedł do pokoju
                 string url = Request.Url.AbsoluteUri;
                 string[] splitedUrl = url.Split('?');
                 string roomName = splitedUrl[1];
+
+                // sprawdzanie hasła do pokoju
                 if (checkPass(roomName, password))
                 {
                     using (var db = new conferenceEntities2())
@@ -47,6 +49,7 @@ namespace conffandauthh.Controllers
                         db.SaveChanges();
                     }//using
 
+                    // lista znajomych
                     List<SearchFriendModel> friends = getFriends(getUser());
 
                     return View(friends);
@@ -62,15 +65,21 @@ namespace conffandauthh.Controllers
                 // nic nie rób
             }
 
-            if (getUser() != null)
+            // jeśli użytkownik jest zalogowany to wyświetl mu listę znajomych
+            if (user != null)
             {
-                List<SearchFriendModel> model = getFriends(getUser());
+                List<SearchFriendModel> model = getFriends(user);
                 return View(model);
             }//if
 
             return View();
         }
 
+        /// <summary>
+        /// Pobiera listę znajomych danego użytkownika
+        /// </summary>
+        /// <param name="applicationUser">Aktualnie zalogowany użytkownik</param>
+        /// <returns></returns>
         private List<SearchFriendModel> getFriends(ApplicationUser applicationUser)
         {
             using(var db = new conferenceEntities2())
