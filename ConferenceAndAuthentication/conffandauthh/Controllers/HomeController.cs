@@ -28,12 +28,32 @@ namespace conffandauthh.Controllers
 
             try
             {
-                //sprawdzanie URL, jeśli nie rzuci wyjątku to znaczy, że użytkownik wszedł do pokoju
+                // sprawdzanie URL, jeśli nie rzuci wyjątku to znaczy, że użytkownik wszedł do pokoju
                 string url = Request.Url.AbsoluteUri;
                 string[] splitedUrl = url.Split('?');
                 string roomName = splitedUrl[1];
+
+                // sprawdzanie hasła do pokoju
                 if (checkPass(roomName, password))
-                    return View();
+                {
+                    using (var db = new conferenceEntities2())
+                    {
+                        int roomId = db.Rooms.First(r => r.name == roomName).roomId;
+                        var invitationsArray = (from invit in db.RoomsInvitations
+                                               where invit.invitee == user.Id && invit.roomId==roomId
+                                               select invit).ToArray();
+                        foreach(var i in invitationsArray)
+                        {
+                            db.RoomsInvitations.Remove(i);
+                        }//foreach
+                        db.SaveChanges();
+                    }//using
+
+                    // lista znajomych
+                    List<SearchFriendModel> friends = getFriends(getUser());
+
+                    return View(friends);
+                }//if
 
                 ViewBag.roomName = roomName;
                 ViewBag.pass = password;
@@ -45,8 +65,45 @@ namespace conffandauthh.Controllers
                 // nic nie rób
             }
 
+            // jeśli użytkownik jest zalogowany to wyświetl mu listę znajomych
+            if (user != null)
+            {
+                List<SearchFriendModel> model = getFriends(user);
+                return View(model);
+            }//if
+
             return View();
         }
+
+        /// <summary>
+        /// Pobiera listę znajomych danego użytkownika
+        /// </summary>
+        /// <param name="applicationUser">Aktualnie zalogowany użytkownik</param>
+        /// <returns></returns>
+        private List<SearchFriendModel> getFriends(ApplicationUser applicationUser)
+        {
+            using(var db = new conferenceEntities2())
+            {
+                ApplicationUser[] users;
+                using (ApplicationDbContext adb = new ApplicationDbContext()) {
+                    users = adb.Users.ToArray();
+                }//using
+
+                var friendIdsList = (from friend in db.Friends
+                                  where friend.firstUserId == applicationUser.Id
+                                  select friend.secondUserId).ToList();
+
+                List<SearchFriendModel> friendsCustomList = new List<SearchFriendModel>();
+
+                foreach(var friendId in friendIdsList)
+                {
+                    string username = users.First(u => u.Id == friendId).UserName;
+                    friendsCustomList.Add(new SearchFriendModel { Email = username });
+                }//foreach
+
+                return friendsCustomList;
+            }//using
+        }//getFriends()
 
         /// <summary>
         /// Sprawdzanie czy podane hasło pasuje do hasła pokoju.
