@@ -174,6 +174,26 @@ namespace conffandauthh.Controllers
             return "ok";
         }//createRoom()
 
+        [HttpPost]
+        [Authorize]
+        public void leavingRoom(string roomname)
+        {
+            using (var db = new conferenceEntities2())
+            {
+                try
+                {
+                    int roomId = db.Rooms.First(r => r.name == roomname).roomId;
+                    string userId = getUser().Id;
+                    var userToDel = db.UsersInRoom.First(u => u.userId == userId && u.roomId == roomId);
+
+                    // usuwanie
+                    db.UsersInRoom.Remove(userToDel);
+                    db.SaveChanges();
+                }//try
+                catch(InvalidOperationException) { };
+            }//using
+        }//leavingRoom()
+
         /// <summary>
         /// Dodawanie nowego pokoju
         /// </summary>

@@ -276,7 +276,7 @@
             }
         });
 
-        // Since we use this twice we put it here
+        // czynności wykonywane podczas dołączania do pokoju
         function setRoom(name) {
             document.getElementById('createRoom').remove();
 
@@ -288,11 +288,24 @@
             $("#addFriend").show();
             $("#friendsTable").show();
 
-            // dodawanie skryptu pytającego o potwierdzenie wyjścia ze strony
+            // dodawanie skryptu informującego serwer o opuszczeniu strony z pokojem
             $(function () {
                 $('<script>')
                   .attr('type', 'text/javascript')
-                  .text('window.onbeforeunload = confirmExit; function confirmExit() { return "You have attempted to leave this page.  If you have made any changes to the fields without clicking the Save button, your changes will be lost.  Are you sure you want to exit this page?"; }')
+                  .text(function () {
+                      window.onbeforeunload = confirmExit;
+                      function confirmExit() {
+                          $.ajax({
+                              url: 'https://' + location.host + '/Home/leavingRoom',
+                              type: 'POST',
+                              data: { roomname: name },
+                              success: function (data) {
+                                  console.log("success");
+                              }
+                          });
+                          console.log("wyjście");
+                      }
+                  })
                   .appendTo('head');
             })
         }
