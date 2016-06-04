@@ -15,13 +15,11 @@ Projekt z przedmiotu Podstawy Teleinformatyki.
 
 ### Do zrobienia ###
 
- * Usuwanie nieaktywnych pokojów z tabeli aktywne
  * Sprawdzanie adresu email
  * Zmiana wyświetlania adresu email na nick
  * Instalacja wtyczek do konfiguracji udostępniania pokoju w Chrome
  * Automatyczne dodwanie adresu do białej listy w Firefox
  * Ukrycie czatu zaraz po zalogowaniu (powinien być widoczny dopiero w pokoju)
- * Usuwanie zaproszenia do nieaktywnego pokoju (to pewnie poleci razem z zależnościami do aktywnego pokoju)
  * Usunięcie zakładki znajomi z strony głównej przed zalogowaniem
  * Przetestowanie strony pod innymi przeglądarkami i ewentualne poinformowanie użytkowników o potrzebie zmiany przeglądarki
  * Przekierowanie na HTTPS
