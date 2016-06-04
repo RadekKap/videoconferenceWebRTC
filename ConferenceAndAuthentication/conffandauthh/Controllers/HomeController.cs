@@ -135,12 +135,18 @@ namespace conffandauthh.Controllers
         [HttpPost]
         public string createRoom(RoomCreateModel room)
         {
-            // pobieranie danych o użytkowniku wykonującym zapytanie
-            ApplicationUser user = getUser();
+            // sprawdzenie czy uzytkownik podał wszystkie dane
+            if (string.IsNullOrEmpty(room.name))
+                return "Podaj nazwę pokoju!";
+            if (string.IsNullOrEmpty(room.password))
+                room.password="";
 
             // sprawdzanie czy pokój o tej nazwie już istnieje
-            //if (!checkRoomName(room.name))
-                //return "fail";
+            if (!checkRoomName(room.name))
+                return "Pokój o podanej nazwie już istnieje!";
+
+            // pobieranie danych o użytkowniku wykonującym zapytanie
+            ApplicationUser user = getUser();
 
             // tworzenie obiektów, które zostaną dodane do bazy
             Rooms roomToAdd = new Rooms()

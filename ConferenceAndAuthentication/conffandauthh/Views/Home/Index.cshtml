@@ -289,24 +289,48 @@
                 $("#friendsTable").show();
             }
 
+            // jeśli użytkownik wszedł do pokoju do zmień przyciski na informację o pokoju,
+            // w przeciwnym wypadku pokaż formularz tworzenia nowego pokoju
             if (room) {
                 setRoom(room);
             } else {
                 $('#createRoom').submit(function () {
                     var val = $('#sessionInput').val().toLowerCase().replace(/\s/g, '-').replace(/[^A-Za-z0-9_\-]/g, '');
-                    var pass = $('#passwordInput').val();
-                    $.post('https://' + location.host + '/Home/createRoom', { name: val, password: pass });
-                    webrtc.createRoom(val, function (err, name) {
-                        console.log(' create room cb', arguments);
+                    if (val == '') {
+                        $('#subTitle').text('Pokój musi mieć nazwę!');
+                        return false;
+                    }
+                    // Informacja o tworzeniu pokoju
+                    $('#createRoom').hide();
+                    $('#subTitle').text('Tworzenie pokoju...');
 
-                        var newUrl = location.pathname + '?' + name;
-                        if (!err) {
-                            history.replaceState({ foo: 'bar' }, null, newUrl);
-                            setRoom(name);
-                        } else {
-                            console.log(err);
-                        }
-                    });
+                    var pass = $('#passwordInput').val();
+                    $.post('https://' + location.host + '/Home/createRoom',
+                        { name: val, password: pass },
+                            function (data) {
+                                console.log(data);
+                                if (data == 'ok') {
+                                    // tworzenie pokoju
+                                    webrtc.createRoom(val, function (err, name) {
+                                        console.log(' create room cb', arguments);
+
+                                        var newUrl = location.pathname + '?' + name;
+                                        if (!err) {
+                                            history.replaceState({ foo: 'bar' }, null, newUrl);
+                                            setRoom(name);
+                                        } else {
+                                            console.log(err);
+                                        }
+                                    });
+                                }//if
+                                else {
+                                    // informacja o błędzie
+                                    $('#createRoom').show();
+                                    $('#subTitle').text(data);
+                                }
+
+                            });
+                    // nie odświeżaj strony
                     return false;
                 });
             }
