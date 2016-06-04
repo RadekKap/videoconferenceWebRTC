@@ -40,9 +40,9 @@ namespace conffandauthh.Controllers
                     {
                         int roomId = db.Rooms.First(r => r.name == roomName).roomId;
                         var invitationsArray = (from invit in db.RoomsInvitations
-                                               where invit.invitee == user.Id && invit.roomId==roomId
-                                               select invit).ToArray();
-                        foreach(var i in invitationsArray)
+                                                where invit.invitee == user.Id && invit.roomId == roomId
+                                                select invit).ToArray();
+                        foreach (var i in invitationsArray)
                         {
                             db.RoomsInvitations.Remove(i);
                         }//foreach
@@ -82,20 +82,21 @@ namespace conffandauthh.Controllers
         /// <returns></returns>
         private List<SearchFriendModel> getFriends(ApplicationUser applicationUser)
         {
-            using(var db = new conferenceEntities2())
+            using (var db = new conferenceEntities2())
             {
                 ApplicationUser[] users;
-                using (ApplicationDbContext adb = new ApplicationDbContext()) {
+                using (ApplicationDbContext adb = new ApplicationDbContext())
+                {
                     users = adb.Users.ToArray();
                 }//using
 
                 var friendIdsList = (from friend in db.Friends
-                                  where friend.firstUserId == applicationUser.Id
-                                  select friend.secondUserId).ToList();
+                                     where friend.firstUserId == applicationUser.Id
+                                     select friend.secondUserId).ToList();
 
                 List<SearchFriendModel> friendsCustomList = new List<SearchFriendModel>();
 
-                foreach(var friendId in friendIdsList)
+                foreach (var friendId in friendIdsList)
                 {
                     string username = users.First(u => u.Id == friendId).UserName;
                     friendsCustomList.Add(new SearchFriendModel { Email = username });
@@ -139,7 +140,7 @@ namespace conffandauthh.Controllers
             if (string.IsNullOrEmpty(room.name))
                 return "Podaj nazwę pokoju!";
             if (string.IsNullOrEmpty(room.password))
-                room.password="";
+                room.password = "";
 
             // sprawdzanie czy pokój o tej nazwie już istnieje
             if (!checkRoomName(room.name))
@@ -169,6 +170,12 @@ namespace conffandauthh.Controllers
             return "ok";
         }//createRoom()
 
+        /// <summary>
+        /// Dodawanie nowego pokoju
+        /// </summary>
+        /// <param name="roomToAdd">Pokój do dodania</param>
+        /// <param name="oldRoomToAdd">Pokój do dodania</param>
+        /// <returns></returns>
         private bool addRoom(Rooms roomToAdd, OldRooms oldRoomToAdd)
         {
             using (var db = new conferenceEntities2())
@@ -184,7 +191,26 @@ namespace conffandauthh.Controllers
                 int roomId = roomToAdd.roomId;
                 int oldRoomId = oldRoomToAdd.oldRoomId;
                 if (roomId == oldRoomId)
+                {     
+                    // dodawanie twórcy do utworzonego pokoju              
+                    UsersInRoom userInRoom = new UsersInRoom()
+                    {
+                        roomId = roomId,
+                        userId = roomToAdd.ownerId
+                    };
+
+                    UsersInOldRoom usersInOldRoom = new UsersInOldRoom()
+                    {
+                        oldRoomId = roomId,
+                        userId = roomToAdd.ownerId
+                    };
+
+                    db.UsersInRoom.Add(userInRoom);
+                    db.UsersInOldRoom.Add(usersInOldRoom);
+                    db.SaveChanges();
+
                     return true;
+                }//if
 
                 // usuwanie pokojów z bazy jeśli mają inne id
                 rooms.Remove(roomToAdd);

@@ -120,8 +120,11 @@ namespace conffandauthh.Controllers
             // użytkownik zapraszający
             ApplicationUser user = getUser();
 
-            ApplicationDbContext adb = new ApplicationDbContext();
-            var users = adb.Users.ToArray();
+            ApplicationUser[] users;
+            using (ApplicationDbContext adb = new ApplicationDbContext())
+            {
+                users = adb.Users.ToArray();
+            }//using
             string invitedUserId;
 
             try
