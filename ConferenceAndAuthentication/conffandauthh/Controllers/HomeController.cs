@@ -38,6 +38,7 @@ namespace conffandauthh.Controllers
                 {
                     using (var db = new conferenceEntities2())
                     {
+                        // usuwanie zaproszeń do pokoju (jeśli były)
                         int roomId = db.Rooms.First(r => r.name == roomName).roomId;
                         var invitationsArray = (from invit in db.RoomsInvitations
                                                 where invit.invitee == user.Id && invit.roomId == roomId
@@ -47,6 +48,9 @@ namespace conffandauthh.Controllers
                             db.RoomsInvitations.Remove(i);
                         }//foreach
                         db.SaveChanges();
+
+                        // dodawanie uzytkownika do aktywnego pokoju
+                        addUserToRoom(roomId, user.Id);
                     }//using
 
                     // lista znajomych
@@ -207,6 +211,11 @@ namespace conffandauthh.Controllers
             return false;
         }//addRoom()
 
+        /// <summary>
+        /// Dodawanie użytkownika do tabel UsersInRoom i UsersInOldRoom
+        /// </summary>
+        /// <param name="roomId">ID pokoju</param>
+        /// <param name="userId">ID użytkownika</param>
         private void addUserToRoom(int roomId, string userId)
         {
             using (var db = new conferenceEntities2())
