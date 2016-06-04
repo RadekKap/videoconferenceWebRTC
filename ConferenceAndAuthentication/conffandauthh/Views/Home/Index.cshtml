@@ -36,15 +36,15 @@
         <p id="sendedRoomInvitation" style="display:inline"></p>
     </div>
 
-        <div id="notifications">
-            <h3>Powiadomienia</h3>
-        </div>
-        <h3 id="title">Utwórz pokój</h3>
-        <form id="createRoom">
-            Nazwa pokoju: <input id="sessionInput" /><br />
-            Hasło do pokoju: <input id="passwordInput" /><br />
-            <button disabled type="submit">Stwórz nowy pokój</button>
-        </form>
+    <div id="notifications">
+        <h3>Powiadomienia</h3>
+    </div>
+    <h3 id="title">Utwórz pokój</h3>
+    <form id="createRoom">
+        Nazwa pokoju: <input id="sessionInput" /><br />
+        Hasło do pokoju: <input id="passwordInput" /><br />
+        <button disabled type="submit">Stwórz nowy pokój</button>
+    </form>
         <p id="subTitle"></p>
 
         <div>
@@ -287,6 +287,14 @@
             // pokazywanie formularza dodawania znajomego do pokoju i listy znajomych
             $("#addFriend").show();
             $("#friendsTable").show();
+
+            // dodawanie skryptu pytającego o potwierdzenie wyjścia ze strony
+            $(function () {
+                $('<script>')
+                  .attr('type', 'text/javascript')
+                  .text('window.onbeforeunload = confirmExit; function confirmExit() { return "You have attempted to leave this page.  If you have made any changes to the fields without clicking the Save button, your changes will be lost.  Are you sure you want to exit this page?"; }')
+                  .appendTo('head');
+            })
         }
 
         // jeśli użytkownik wszedł do pokoju do zmień przyciski na informację o pokoju,
