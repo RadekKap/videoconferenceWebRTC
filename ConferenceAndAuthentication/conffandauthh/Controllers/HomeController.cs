@@ -191,23 +191,9 @@ namespace conffandauthh.Controllers
                 int roomId = roomToAdd.roomId;
                 int oldRoomId = oldRoomToAdd.oldRoomId;
                 if (roomId == oldRoomId)
-                {     
+                {
                     // dodawanie twórcy do utworzonego pokoju              
-                    UsersInRoom userInRoom = new UsersInRoom()
-                    {
-                        roomId = roomId,
-                        userId = roomToAdd.ownerId
-                    };
-
-                    UsersInOldRoom usersInOldRoom = new UsersInOldRoom()
-                    {
-                        oldRoomId = roomId,
-                        userId = roomToAdd.ownerId
-                    };
-
-                    db.UsersInRoom.Add(userInRoom);
-                    db.UsersInOldRoom.Add(usersInOldRoom);
-                    db.SaveChanges();
+                    addUserToRoom(roomId, roomToAdd.ownerId);
 
                     return true;
                 }//if
@@ -220,6 +206,48 @@ namespace conffandauthh.Controllers
 
             return false;
         }//addRoom()
+
+        private void addUserToRoom(int roomId, string userId)
+        {
+            using (var db = new conferenceEntities2())
+            {
+                // dodawanie użytkownika do aktywnego pokoju
+                try
+                {
+                    // jeśli rzuci wyjątek to znaczy, że użytkownik jeszcze nie jest dodany
+                    db.UsersInRoom.First(u => u.roomId == roomId && u.userId == userId);
+                }//try
+                catch (InvalidOperationException)
+                {
+                    // dodaj użytkownika
+                    UsersInRoom userInRoom = new UsersInRoom()
+                    {
+                        roomId = roomId,
+                        userId = userId
+                    };
+                    db.UsersInRoom.Add(userInRoom);
+                }//catch
+
+                // dodawanie użytkownika do archiwalnego pokoju
+                try
+                {
+                    // jw.
+                    db.UsersInOldRoom.First(u => u.oldRoomId == roomId && u.userId == userId);
+                }//try
+                catch (InvalidOperationException)
+                {
+                    UsersInOldRoom usersInOldRoom = new UsersInOldRoom()
+                    {
+                        oldRoomId = roomId,
+                        userId = userId
+                    };
+                    db.UsersInOldRoom.Add(usersInOldRoom);
+                }//catch
+
+                // zapisz zmiany
+                db.SaveChanges();
+            }//using
+        }//addUserToRoom()
 
         private bool checkRoomName(string name)
         {
