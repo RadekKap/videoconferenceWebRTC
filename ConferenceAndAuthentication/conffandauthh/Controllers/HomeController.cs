@@ -61,7 +61,14 @@ namespace conffandauthh.Controllers
 
                 ViewBag.roomName = roomName;
                 ViewBag.pass = password;
-                ViewBag.Nick = user.Email.ToString();
+                try
+                {
+                    ViewBag.Nick = user.Email.ToString();
+                }
+                catch (NullReferenceException)
+                {
+                    // nic nie rób
+                }
                 return View("RoomPassword");
             }//try
             catch (IndexOutOfRangeException)
@@ -178,11 +185,12 @@ namespace conffandauthh.Controllers
         [Authorize]
         public void leavingRoom(string roomname)
         {
+            int roomId;
             using (var db = new conferenceEntities2())
             {
                 try
                 {
-                    int roomId = db.Rooms.First(r => r.name == roomname).roomId;
+                    roomId = db.Rooms.First(r => r.name == roomname).roomId;
                     string userId = getUser().Id;
                     var userToDel = db.UsersInRoom.First(u => u.userId == userId && u.roomId == roomId);
 
@@ -190,9 +198,59 @@ namespace conffandauthh.Controllers
                     db.UsersInRoom.Remove(userToDel);
                     db.SaveChanges();
                 }//try
-                catch(InvalidOperationException) { };
+                catch(InvalidOperationException) {
+                    return;
+                };
             }//using
+
+            // usuwanie pokoju jeżeli jest pusty
+            deleteRoomIfEmpty(roomId);
         }//leavingRoom()
+
+        /// <summary>
+        /// Usuwa pokój jeśli ten jest pusty
+        /// </summary>
+        /// <param name="roomId">ID pokoju</param>
+        private void deleteRoomIfEmpty(int roomId)
+        {
+            using (var db = new conferenceEntities2())
+            {
+                try
+                {
+                    // jeśli sekwencja jest pusta to rzuci wyjątek
+                    db.UsersInRoom.First(u => u.roomId == roomId);
+                }//try
+                catch(InvalidOperationException)
+                {
+                    // nie ma użytkowników w pokoju, więc zostanie usunięty
+                    var room = db.Rooms.First(r => r.roomId == roomId);
+
+                    // usuwanie zależnośći
+                    removeEmptyRoomInvitations(roomId);
+
+                    // usuwanie pokoju
+                    db.Rooms.Remove(room);
+                    db.SaveChanges();
+                }//catch
+            }//using
+        }//deleteRoomIfEmpty()
+
+        /// <summary>
+        /// Usuwanie zaproszeń do pustego pokoju
+        /// </summary>
+        /// <param name="roomId">ID pokoju</param>
+        private void removeEmptyRoomInvitations(int roomId)
+        {
+            using (var db = new conferenceEntities2())
+            {
+                RoomsInvitations[] roomsInvitations = (from roomsInv in db.RoomsInvitations
+                                                      where roomsInv.roomId == roomId
+                                                      select roomsInv).ToArray();
+                foreach (var ri in roomsInvitations)
+                    db.RoomsInvitations.Remove(ri);
+                db.SaveChanges();
+            }//using
+        }//removeEmptyRoomInvitations()
 
         /// <summary>
         /// Dodawanie nowego pokoju
