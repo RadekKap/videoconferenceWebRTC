@@ -1,0 +1,23 @@
+﻿
+@{
+    ViewBag.Title = "RoomNotExist";
+}
+
+@if (Request.IsAuthenticated)
+{
+    <h2>Pokój nie istnieje</h2>
+
+    <p>
+        Podany adres pokoju jest nieprawidłowy. Pokój, którego szukasz nigdy nie istniał
+        lub został usunięty zanim tutaj trafiłeś. Możesz utworzyć nowy pokój o tej samej nazwie.
+    </p>
+}
+else
+{
+    <div class="jumbotron">
+        <h1>Wideo-Konferencje</h1>
+        <p class="lead">Aby korzystać z usług naszego serwisu musisz się zarejestrować lub zalogować na istniejące konto</p>
+        <p><a class="btn btn-default" href=@Url.Action("Register", "Account")>Rejestracja</a></p>
+        <p><a class="btn btn-default" href=@Url.Action("Login", "Account")>Zaloguj</a></p>
+    </div>
+}

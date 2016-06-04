@@ -33,6 +33,10 @@ namespace conffandauthh.Controllers
                 string[] splitedUrl = url.Split('?');
                 string roomName = splitedUrl[1];
 
+                // sprawdzanie czy pokój isnieje
+                if (roomNotExists(roomName))
+                    return View("RoomNotExist");
+
                 // inicjalizacja pustego hasła (pokój nie ma hasła)
                 if (string.IsNullOrEmpty(password))
                     password = "";
@@ -89,6 +93,25 @@ namespace conffandauthh.Controllers
 
             return View();
         }
+
+        private bool roomNotExists(string roomName)
+        {
+            try
+            {
+                using (var db = new conferenceEntities2())
+                {
+                    db.Rooms.First(r => r.name == roomName);
+                }//using
+
+                // pokój isnieje
+                return false; 
+            }//try
+            catch(InvalidOperationException)
+            {
+                // pokój nie istnieje
+                return true;
+            }//catch
+        }//roomNotExists()
 
         /// <summary>
         /// Pobiera listę znajomych danego użytkownika
