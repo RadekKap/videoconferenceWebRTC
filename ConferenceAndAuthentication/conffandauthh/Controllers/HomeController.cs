@@ -33,6 +33,10 @@ namespace conffandauthh.Controllers
                 string[] splitedUrl = url.Split('?');
                 string roomName = splitedUrl[1];
 
+                // inicjalizacja pustego hasła (pokój nie ma hasła)
+                if (string.IsNullOrEmpty(password))
+                    password = "";
+
                 // sprawdzanie hasła do pokoju
                 if (checkPass(roomName, password))
                 {

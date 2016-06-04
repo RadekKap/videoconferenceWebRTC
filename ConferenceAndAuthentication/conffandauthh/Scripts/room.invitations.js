@@ -27,7 +27,7 @@ $('#addFriendButton').click(function () {
 });
 
 // sprawdzanie zaproszeń do pokojów
-var interval = 3000;  // 3 sekundy
+var interval = 5000;  // 5 sekundy
 var lastData; // zmienna pomicnicza przy aktualizacji danych
 function checkRoomInvitations() {
     $.ajax({
@@ -46,7 +46,9 @@ function checkRoomInvitations() {
         }
     });
 }
-var timer = setTimeout(checkRoomInvitations, interval);
+
+// pierwsze sprawdzenie jest wymuszone tym kodem
+checkRoomInvitations();
 
 // usuwanie zaproszenia do pokoju na żądanie zapraszanego
 $('#notifications').on('click', '#deleteInvitationButton', function () {
@@ -58,7 +60,6 @@ $('#notifications').on('click', '#deleteInvitationButton', function () {
         data: { roomname: roomname },
         success: function () {
             console.log("Usunięto zaproszenie do pokoju " + roomname);
-            //timer = setTimeout(checkRoomInvitations, interval);
         }
     });
 });
