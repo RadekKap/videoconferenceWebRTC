@@ -15,18 +15,63 @@ namespace conffandauthh.Controllers
 
         public ActionResult Index(string password)
         {
+            ApplicationDbContext dbcont = new ApplicationDbContext();
+          
+            var allusers = dbcont.Users.ToArray();
+
+            BigSearchFriendModel model = new BigSearchFriendModel();
+
+            model.toinivitations = new SearchFriendModel();
+
             ApplicationUser user = getUser();
             try
             {
                 ViewBag.Nick = user.Email.ToString();
+
+                using (var db = new conferenceEntities2())
+                {
+                    var find = from docs in db.Invitation where docs.secondUserId == user.Id select docs;
+
+                    var invitations = find.ToArray();
+
+
+
+                    if (invitations.Count() > 0)
+                    {
+                        ViewBag.mess = invitations.Count().ToString();
+
+                        model.toinivitations.ListFriends = new string[invitations.Count()];
+                        int licz = 0;
+                        foreach (var x in invitations)
+                        {
+                            foreach (var z in allusers)
+                            {
+                                if(z.Id.Equals(x.firstUserId))
+                                {
+                                    model.toinivitations.ListFriends.SetValue(z.Email, licz);
+                                    licz++;
+                                    break;
+                                }
+                                
+                            }
+                           
+                        }
+                    }
+                    else
+                        ViewBag.mess = null;
+
+                }
             }
-            catch (NullReferenceException)
+            catch (Exception)
             {
 
             }
 
+           
 
-            try
+
+
+                try
             {
                 // sprawdzanie URL, jeśli nie rzuci wyjątku to znaczy, że użytkownik wszedł do pokoju
                 string url = Request.Url.AbsoluteUri;
@@ -62,9 +107,9 @@ namespace conffandauthh.Controllers
                     }//using
 
                     // lista znajomych
-                    List<SearchFriendModel> friends = getFriends(getUser());
+                    model.tofriends = getFriends(getUser());
 
-                    return View(friends);
+                    return View(model);
                 }//if
 
                 ViewBag.roomName = roomName;
@@ -87,11 +132,76 @@ namespace conffandauthh.Controllers
             // jeśli użytkownik jest zalogowany to wyświetl mu listę znajomych
             if (user != null)
             {
-                List<SearchFriendModel> model = getFriends(user);
+                model.tofriends = getFriends(user);
                 return View(model);
             }//if
 
             return View();
+        }
+
+
+        [HttpPost]
+        public ActionResult Friendinviteaccept(string email,string[] model)
+        {
+            ApplicationDbContext dbcont = new ApplicationDbContext();
+            
+            ApplicationUser user = getUser();
+            var allusers = dbcont.Users.ToArray();
+
+            BigSearchFriendModel br = new BigSearchFriendModel();
+            br.toinivitations = new SearchFriendModel();
+
+            br.toinivitations.Email = email;
+            br.toinivitations.ListFriends = model;
+            var IDfr = allusers[0].Id;
+
+            foreach (var x in allusers)
+            {
+                if (x.Email.Equals(email))
+                {
+                    IDfr = x.Id;
+                    break;
+                }
+
+            }
+
+            Friends fr1 = new Friends
+            {
+                firstUserId = user.Id,
+                secondUserId = IDfr
+            };
+
+            Friends fr2 = new Friends
+            {
+                firstUserId = IDfr,
+                secondUserId = user.Id
+            };
+
+            var find = from docs in db.Invitation where docs.secondUserId == user.Id where docs.firstUserId==IDfr  select docs;
+            Invitation inv = null;
+            if (find.Any())
+            {
+                inv = find.First();
+
+            }
+
+
+            using (var db = new conferenceEntities2())
+            {
+                 db.Friends.Add(fr1);
+                db.Friends.Add(fr2);
+                db.SaveChanges();
+                if (inv != null)
+                {
+                    db.Invitation.Attach(inv);
+                    db.Invitation.Remove(inv);
+                }
+              
+                db.SaveChanges();
+            }
+            br.tofriends = getFriends(user);
+
+            return View("../Home/Index", br);
         }
 
         private bool roomNotExists(string roomName)

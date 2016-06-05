@@ -1,16 +1,17 @@
 ﻿
-
+@model conffandauthh.Models.BigSearchFriendModel
 
 @using Microsoft.AspNet.Identity
 
 
 @{
     ViewBag.Title = "Wideoczat";
+   
 }
 
 @if (Request.IsAuthenticated)
 {
-    @model IEnumerable<conffandauthh.Models.SearchFriendModel>
+   
     // zapraszanie innych osób do pokoju
 
     // lista znajomych
@@ -19,7 +20,7 @@
         <tr>
             <td>Zaproś znajomego do rozmowy</td>
         </tr>
-        @foreach (var item in Model)
+        @foreach (var item in Model.tofriends)
         {
             <tr>
                 <td>
@@ -71,7 +72,7 @@
             <input type="button" id="sendmessage" value="Wyślij" />
 
             <input type="hidden" id="displayname" value="@ViewBag.Nick" />
-
+            <input type="hidden" id="invitationscount" value="@ViewBag.mess" />
 
             <ul id="discussion"></ul>
         </div>
@@ -83,6 +84,107 @@
 
     // obsługa webrtc
     <script>
+
+
+
+        var invitearray = @Html.Raw(Json.Encode(Model.toinivitations.ListFriends));
+
+
+
+        $(document).ready(function () {
+
+
+
+            // ANIMATEDLY DISPLAY THE NOTIFICATION COUNTER.
+            $('#noti_Counter')
+                .css({ opacity: $('#invitationscount').val() })
+                .text($('#invitationscount').val())              // ADD DYNAMIC VALUE (YOU CAN EXTRACT DATA FROM DATABASE OR XML).
+                .css({ top: '-10px' })
+                .animate({ top: '-2px', opacity: $('#invitationscount').val()}, 500);
+
+            $('#noti_Button').click(function () {
+
+                // TOGGLE (SHOW OR HIDE) NOTIFICATION WINDOW.
+                $('#notifications1').fadeToggle('fast', 'linear', function () {
+                    if ($('#notifications1').is(':hidden')) {
+                        $('#noti_Button').css('background-color', '#FFF');
+                    }
+                    else $('#noti_Button').css('background-color', '#FFF');        // CHANGE BACKGROUND COLOR OF THE BUTTON.
+                });
+
+                $('#noti_Counter').fadeOut('slow');                 // HIDE THE COUNTER.
+
+                return false;
+            });
+
+            // HIDE NOTIFICATIONS WHEN CLICKED ANYWHERE ON THE PAGE.
+            $(document).click(function () {
+                $('#notifications1').hide();
+
+                // CHECK IF NOTIFICATION COUNTER IS HIDDEN.
+                if ($('#noti_Counter').is(':hidden')) {
+                    // CHANGE BACKGROUND COLOR OF THE BUTTON.
+                    $('#noti_Button').css('background-color', '#FFF');
+                }
+            });
+
+            $('#notifications1').click(function () {
+                return false;       // DO NOTHING WHEN CONTAINER IS CLICKED.
+            });
+
+
+
+
+
+            for (var i = 0; i <invitearray.length; i++) {
+         
+                $('#areatoacceptinvitations').append('<strong>'+invitearray[i]+'</strong>'
+               + '&nbsp;&nbsp; <button class = "buttons1" name = "ltrContainer1" >'+'Zaakceptuj'+'</button>'+ '&nbsp;&nbsp; <button class = "buttons2" name = "ltrContainer2" >'+'Odrzuć'+'</button>'+'<br/>');
+            }
+
+            $('#areatoacceptinvitations').on('click', '.buttons1', function() {
+                // Do something on click on an existent or future .dynamicElement
+              //event.stopImmediatePropagation();
+                var myValue = $(this).prev().html();
+              
+                console.log("Email: " + myValue );
+                $.post('https://' + location.host + '/Home/Friendinviteaccept', { email: myValue, model: invitearray }, function(data){
+               
+                    for (var i=invitearray.length-1; i>=0; i--) {
+                        if (invitearray[i] === myValue) {
+                            console.log("Email: " + myValue +" "+invitearray[i]);
+                            invitearray.splice(i, 1);
+                            // break;       //<-- Uncomment  if only the first term has to be removed
+                        }
+                    }
+               
+                    document.getElementById('areatoacceptinvitations').innerHTML = "";
+                    
+                    for (var i = 0; i <invitearray.length; i++) {
+         
+                        $('#areatoacceptinvitations').append('<strong>'+invitearray[i]+'</strong>'
+                       + '&nbsp;&nbsp; <button class = "buttons1" name = "ltrContainer1" >'+'Zaakceptuj'+'</button>'+ '&nbsp;&nbsp; <button class = "buttons2" name = "ltrContainer2" >'+'Odrzuć'+'</button>'+'<br/>');
+                    }
+              
+                    alert('Zaproszenie od użytkownika '+myValue+' zostało zaakceptowane'); 
+                });
+
+           
+
+            });
+
+        });
+
+        
+       
+
+
+
+
+
+
+
+
         // pobieranie nazwy pokoju z URL
         var room = location.search && location.search.split('?')[1];
 

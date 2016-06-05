@@ -10,6 +10,44 @@
     <link rel="stylesheet" href="css/style.min.css">
     <link rel="icon" type="image/png" href="img/favicon.png">
     <style>
+        #message
+    {
+       display:none;
+    position:fixed;
+    bottom:0;
+    right:3px;
+    min-height: 50px;
+    height:80px;
+    width:600px;
+    background: #4679bd;     
+    padding: 20px 60px;      
+    font: 24px Georgia, serif;     
+    color: #fff;     
+    border-radius: 9px;
+    }
+    #message span
+    {
+        text-align: center;
+        width: 95%;
+        float: left;
+    }
+    .close-notify
+    {
+      white-space: nowrap;
+        float: right;
+        color: #fff;
+        text-decoration: none;
+        border: 2px #fff solid;
+        position: absolute;
+        top: 10px;
+        right:10px;
+    }
+    .close-notify a
+    {
+        color: #fff;
+    }
+
+
         .videoContainer {
             position: relative;
             width: 200px;
@@ -42,9 +80,98 @@
         #localScreenContainer {
             display: none;
         }
+
+
+
+        #noti_Container {
+        position:relative;
+    }
+       
+         #myul {
+       display:block;
+        list-style:none;
+        margin:0;
+        padding:12px 10px;
+        height:21px;
+    }
+    ul li {
+        float:left;
+        font:13px helvetica;
+        font-weight:bold;
+        margin:3px 0;
+    }
+    ul li a {
+        color:#FFF;
+        text-decoration:none;
+        padding:6px 15px;
+        cursor:pointer;
+    }
+    ul li a:hover {
+        background:#425B90;
+        text-decoration:none;
+        cursor:pointer;
+    }
+
+    /* A CIRCLE LIKE BUTTON IN THE TOP MENU. */
+    #noti_Button {
+        width:22px;
+        height:22px;
+        line-height:22px;
+        border-radius:50%;
+        -moz-border-radius:50%; 
+        -webkit-border-radius:50%;
+        background:#FFF;
+        margin:-3px 20px 3px 10px;
+        cursor:pointer;
+    }
+        
+    /* THE POPULAR RED NOTIFICATIONS COUNTER. */
+    #noti_Counter {
+        display:block;
+        position:absolute;
+        background:#E1141E;
+        color:#FFF;
+        font-size:12px;
+        font-weight:normal;
+        padding:1px 3px;
+        margin:-8px 0 0 25px;
+        border-radius:2px;
+        -moz-border-radius:2px; 
+        -webkit-border-radius:2px;
+        z-index:1;
+    }
+        
+    /* THE NOTIFICAIONS WINDOW. THIS REMAINS HIDDEN WHEN THE PAGE LOADS. */
+    #notifications1 {
+        display:none;
+        width:430px;
+        position:absolute;
+        top:30px;
+        left:0;
+        background:#FFF;
+        border:solid 1px rgba(100, 100, 100, .20);
+        -webkit-box-shadow:0 3px 8px rgba(0, 0, 0, .20);
+        z-index: 0;
+    }
+    /* AN ARROW LIKE STRUCTURE JUST OVER THE NOTIFICATIONS WINDOW */
+    #notifications1:before {         
+        content: '';
+        display:block;
+        width:0;
+        height:0;
+        color:transparent;
+        border:10px solid #CCC;
+        border-color:transparent transparent #FFF;
+        margin-top:-20px;
+        margin-left:10px;
+    }
+
+     
+
     </style>
 </head>
 <body>
+   
     <div class="navbar navbar-inverse navbar-fixed-top">
         <div class="container">
             <div class="navbar-header">
@@ -60,18 +187,32 @@
                     <li>@Html.ActionLink("Strona główna", "Index", "Home")</li>
                     <li>@Html.ActionLink("Znajomi", "Index", "Friends")</li>
                     <li>@Html.ActionLink("Kontakt", "Contact", "Home")</li>
+                    
+                   
                 </ul>
+               
+                
                 @Html.Partial("_LoginPartial")
             </div>
+
         </div>
     </div>
+   
+    
     <div class="container body-content">
+       
+        
         @RenderBody()
+       
         <hr />
         <footer>
             <p>&copy; @DateTime.Now.Year - Projekt PT</p>
         </footer>
     </div>
+    <script type="text/javascript">
+
+
+    </script>
 
     @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/bootstrap")
