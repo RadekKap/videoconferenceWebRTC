@@ -204,6 +204,55 @@ namespace conffandauthh.Controllers
             return View("../Home/Index", br);
         }
 
+
+        [HttpPost]
+        public ActionResult Friendrejected(string email, string[] model)
+        {
+            ApplicationDbContext dbcont = new ApplicationDbContext();
+
+            ApplicationUser user = getUser();
+            var allusers = dbcont.Users.ToArray();
+
+            BigSearchFriendModel br = new BigSearchFriendModel();
+            br.toinivitations = new SearchFriendModel();
+
+            br.toinivitations.Email = email;
+            br.toinivitations.ListFriends = model;
+            var IDfr = allusers[0].Id;
+
+            foreach (var x in allusers)
+            {
+                if (x.Email.Equals(email))
+                {
+                    IDfr = x.Id;
+                    break;
+                }
+
+            }
+            var find = from docs in db.Invitation where docs.secondUserId == user.Id where docs.firstUserId == IDfr select docs;
+            Invitation inv = null;
+            if (find.Any())
+               inv = find.First();
+
+            
+            using (var db = new conferenceEntities2())
+            {              
+               
+                if (inv != null)
+                {
+                    db.Invitation.Attach(inv);
+                    db.Invitation.Remove(inv);
+                }
+
+                db.SaveChanges();
+            }
+            br.tofriends = getFriends(user);
+
+            return View("../Home/Index", br);
+        }
+       
+
+
         private bool roomNotExists(string roomName)
         {
             try

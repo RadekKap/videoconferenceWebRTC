@@ -173,6 +173,41 @@
 
             });
 
+
+            $('#areatoacceptinvitations').on('click', '.buttons2', function() {
+                // Do something on click on an existent or future .dynamicElement
+                //event.stopImmediatePropagation();
+                var myValue = $(this).prev().prev().html();
+              
+                console.log("Email: " + myValue );
+                $.post('https://' + location.host + '/Home/Friendrejected', { email: myValue, model: invitearray }, function(data){
+               
+                    for (var i=invitearray.length-1; i>=0; i--) {
+                        if (invitearray[i] === myValue) {
+                            console.log("Email: " + myValue +" "+invitearray[i]);
+                            invitearray.splice(i, 1);
+                            // break;       //<-- Uncomment  if only the first term has to be removed
+                        }
+                    }
+               
+                    document.getElementById('areatoacceptinvitations').innerHTML = "";
+                    
+                    for (var i = 0; i <invitearray.length; i++) {
+         
+                        $('#areatoacceptinvitations').append('<strong>'+invitearray[i]+'</strong>'
+                       + '&nbsp;&nbsp; <button class = "buttons1" name = "ltrContainer1" >'+'Zaakceptuj'+'</button>'+ '&nbsp;&nbsp; <button class = "buttons2" name = "ltrContainer2" >'+'Odrzuć'+'</button>'+'<br/>');
+                    }
+              
+                    alert('Zaproszenie od użytkownika '+myValue+' zostało odrzucone'); 
+                });
+
+           
+
+            });
+
+
+
+
         });
 
         
