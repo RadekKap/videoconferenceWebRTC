@@ -19,7 +19,9 @@ namespace conffandauthh.Controllers
         public ActionResult Index()
         {
             ApplicationDbContext dbcont = new ApplicationDbContext();
-            SearchFriendModel model = new SearchFriendModel();
+            BigSearchFriendModel model = new BigSearchFriendModel();
+            model.tosendinginv = new SearchFriendModel();
+            model.toinivitations = new SearchFriendModel();
             var allusers = dbcont.Users.ToArray();
             
 
@@ -32,7 +34,7 @@ namespace conffandauthh.Controllers
 
                 var invitations = find.ToArray();
 
-                model.ListFriends = new string[allusers.Count() - 1 - invitations.Count()];
+                model.tosendinginv.ListFriends = new string[allusers.Count() - 1 - invitations.Count()];
                 int licz = 0;
                 foreach (var x in allusers)
                 {
@@ -48,7 +50,7 @@ namespace conffandauthh.Controllers
                                 {
                                     if (licz == invitations.Count() - 1)
                                     {
-                                        model.ListFriends.SetValue(x.Email, pom);
+                                        model.tosendinginv.ListFriends.SetValue(x.Email, pom);
                                         pom++;
                                     }
                                 }
@@ -58,7 +60,7 @@ namespace conffandauthh.Controllers
                             }
                         }else
                         {
-                            model.ListFriends.SetValue(x.Email, pom);
+                            model.tosendinginv.ListFriends.SetValue(x.Email, pom);
                             pom++;
                         }
                     }
@@ -67,22 +69,199 @@ namespace conffandauthh.Controllers
 
             }
 
+
+            try
+            {
+                ViewBag.Nick = user.Email.ToString();
+
+                using (var db = new conferenceEntities2())
+                {
+                    var find = from docs in db.Invitation where docs.secondUserId == user.Id select docs;
+
+                    var invitations = find.ToArray();
+
+                    if (invitations.Count() == 0)
+                        ViewBag.pom = "yes";
+                    else
+                        ViewBag.pom = "no";
+
+                    if (invitations.Count() > 0)
+                    {
+                        ViewBag.mess = invitations.Count().ToString();
+
+                        model.toinivitations.ListFriends = new string[invitations.Count()];
+                        int licz = 0;
+                        foreach (var x in invitations)
+                        {
+                            foreach (var z in allusers)
+                            {
+                                if (z.Id.Equals(x.firstUserId))
+                                {
+                                    model.toinivitations.ListFriends.SetValue(z.Email, licz);
+                                    licz++;
+                                    break;
+                                }
+
+                            }
+
+                        }
+                    }
+                    else
+                        ViewBag.mess = null;
+
+                }
+            }
+            catch (Exception)
+            {
+
+            }
+
+
             return View(model);
         }
 
+
         [HttpPost]
-        public ActionResult Index(SearchFriendModel F)
+        public ActionResult Friendinviteaccept(string email, string[] model, string[] array)
         {
             ApplicationDbContext dbcont = new ApplicationDbContext();
 
-        
+            ApplicationUser user = getUser();
+            var allusers = dbcont.Users.ToArray();
+
+            BigSearchFriendModel br = new BigSearchFriendModel();
+            br.toinivitations = new SearchFriendModel();
+            br.tosendinginv = new SearchFriendModel();
+            br.tosendinginv.ListFriends = array;
+
+            br.toinivitations.Email = email;
+            br.toinivitations.ListFriends = model;
+            var IDfr = allusers[0].Id;
+
+            foreach (var x in allusers)
+            {
+                if (x.Email.Equals(email))
+                {
+                    IDfr = x.Id;
+                    break;
+                }
+
+            }
+
+            Friends fr1 = new Friends
+            {
+                firstUserId = user.Id,
+                secondUserId = IDfr
+            };
+
+            Friends fr2 = new Friends
+            {
+                firstUserId = IDfr,
+                secondUserId = user.Id
+            };
+
+           
+
+
+            using (var db = new conferenceEntities2())
+            {
+
+                var find = from docs in db.Invitation where docs.secondUserId == user.Id where docs.firstUserId == IDfr select docs;
+                Invitation inv = null;
+                if (find.Any())
+                {
+                    inv = find.First();
+
+                }
+
+                db.Friends.Add(fr1);
+                db.Friends.Add(fr2);
+                db.SaveChanges();
+                if (inv != null)
+                {
+                    db.Invitation.Attach(inv);
+                    db.Invitation.Remove(inv);
+                }
+
+                db.SaveChanges();
+            }
+      
+
+            return View("../Friends/Index", br);
+        }
+
+
+        [HttpPost]
+        public ActionResult Friendrejected(string email, string[] model,string [] array)
+        {
+            ApplicationDbContext dbcont = new ApplicationDbContext();
+
+            ApplicationUser user = getUser();
+            var allusers = dbcont.Users.ToArray();
+
+            BigSearchFriendModel br = new BigSearchFriendModel();
+            br.toinivitations = new SearchFriendModel();
+            br.tosendinginv = new SearchFriendModel();
+            br.tosendinginv.ListFriends = array;
+            br.toinivitations.Email = email;
+            br.toinivitations.ListFriends = model;
+
+
+            var IDfr = allusers[0].Id;
+
+            foreach (var x in allusers)
+            {
+                if (x.Email.Equals(email))
+                {
+                    IDfr = x.Id;
+                    break;
+                }
+
+            }
+            
+
+
+            using (var db = new conferenceEntities2())
+            {
+
+                var find = from docs in db.Invitation where docs.secondUserId == user.Id where docs.firstUserId == IDfr select docs;
+                Invitation inv = null;
+                if (find.Any())
+                    inv = find.First();
+
+                if (inv != null)
+                {
+                    db.Invitation.Attach(inv);
+                    db.Invitation.Remove(inv);
+                }
+
+                db.SaveChanges();
+            }
+           
+
+            return View("../Friends/Index", br);
+        }
+
+
+
+
+        [HttpPost]
+        public ActionResult Index(string Email, string[] ListFriends)
+        {
+            ApplicationDbContext dbcont = new ApplicationDbContext();
+            BigSearchFriendModel model = new BigSearchFriendModel();
+            model.tosendinginv = new SearchFriendModel();
+
+            model.tosendinginv.ListFriends = ListFriends;
+            model.toinivitations = new SearchFriendModel();
+
             ApplicationUser user = getUser();
             var allusers = dbcont.Users.ToArray();
             var inviteeID=allusers[0].Id;
             
             foreach (var x in allusers)
             {
-                if (x.Email.Equals(F.Email))
+                if (x.Email.Equals(Email))
                 {
                      inviteeID = x.Id;
                 }
@@ -100,7 +279,7 @@ namespace conffandauthh.Controllers
                 db.Invitation.Add(invitetoAdd);
                 db.SaveChanges();
             }
-            return View(F);
+            return View(model);
         }
 
         public string test()

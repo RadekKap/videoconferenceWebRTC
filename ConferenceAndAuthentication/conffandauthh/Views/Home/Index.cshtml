@@ -74,6 +74,7 @@
             <input type="hidden" id="displayname" value="@ViewBag.Nick" />
             <input type="hidden" id="invitationscount" value="@ViewBag.mess" />
 
+
             <ul id="discussion"></ul>
         </div>
         <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
@@ -148,7 +149,7 @@
                 var myValue = $(this).prev().html();
               
                 console.log("Email: " + myValue );
-                $.post('https://' + location.host + '/Home/Friendinviteaccept', { email: myValue, model: invitearray }, function(data){
+                $.post('https://' + location.host + '/Home/Friendinviteaccept', { email: myValue, model: invitearray, view:"" }, function(data){
                
                     for (var i=invitearray.length-1; i>=0; i--) {
                         if (invitearray[i] === myValue) {
@@ -180,7 +181,7 @@
                 var myValue = $(this).prev().prev().html();
               
                 console.log("Email: " + myValue );
-                $.post('https://' + location.host + '/Home/Friendrejected', { email: myValue, model: invitearray }, function(data){
+                $.post('https://' + location.host + '/Home/Friendrejected', { email: myValue, model: invitearray, view:"" }, function(data){
                
                     for (var i=invitearray.length-1; i>=0; i--) {
                         if (invitearray[i] === myValue) {
@@ -201,12 +202,7 @@
                     alert('Zaproszenie od użytkownika '+myValue+' zostało odrzucone'); 
                 });
 
-           
-
             });
-
-
-
 
         });
 

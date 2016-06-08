@@ -9,6 +9,8 @@ namespace conffandauthh.Models
     {
         public SearchFriendModel toinivitations { get; set; }
 
+        public SearchFriendModel tosendinginv{ get; set; }
+
         public List<SearchFriendModel> tofriends { get; set; }
     }
 }

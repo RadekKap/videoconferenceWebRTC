@@ -1,4 +1,8 @@
-﻿@model conffandauthh.Models.SearchFriendModel
+﻿@model conffandauthh.Models.BigSearchFriendModel
+@using Microsoft.AspNet.Identity
+
+
+
 
 @{
     ViewBag.Title = "Znajomi";
@@ -14,7 +18,8 @@
 
    <p>Podaj email: <input id="emailInput" /></p> 
     <button onclick="search()">Szukaj</button>
-
+    <input type="hidden" id="displayname" value="@ViewBag.Nick" />
+    <input type="hidden" id="invitationscount" value="@ViewBag.mess" />
 
     <br/>
     <br />
@@ -22,10 +27,13 @@
 
 </div>
 
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
+    <script src="/Scripts/latest-v2.js"></script>
+
 <script>
 
 
-    var yourJavaScriptArray = @Html.Raw(Json.Encode(Model.ListFriends));
+    var yourJavaScriptArray = @Html.Raw(Json.Encode(Model.tosendinginv.ListFriends));
    
 
     function search() {
@@ -49,10 +57,11 @@
             event.stopImmediatePropagation();
             var myValue = $(this).prev().html();
             var memquery= $('#emailInput').val();;
-            console.log("Email: " + myValue + em);
+            console.log("Email: " + myValue );
             $.post('https://' + location.host + '/Friends/Index', { Email: myValue , ListFriends: yourJavaScriptArray }, function(data, status){
                
                 for (var i=yourJavaScriptArray.length-1; i>=0; i--) {
+                    console.log(yourJavaScriptArray[i] );
                     if (yourJavaScriptArray[i] === myValue) {
                         yourJavaScriptArray.splice(i, 1);
                         // break;       //<-- Uncomment  if only the first term has to be removed
@@ -82,8 +91,132 @@
     }
 
 
+    //Friend Notification:
+    
 
-   
+    var invitearray = @Html.Raw(Json.Encode(Model.toinivitations.ListFriends));
+
+
+    $(document).ready(function () {
+
+
+
+        // ANIMATEDLY DISPLAY THE NOTIFICATION COUNTER.
+        $('#noti_Counter')
+            .css({ opacity: $('#invitationscount').val() })
+            .text($('#invitationscount').val())              // ADD DYNAMIC VALUE (YOU CAN EXTRACT DATA FROM DATABASE OR XML).
+            .css({ top: '-10px' })
+            .animate({ top: '-2px', opacity: $('#invitationscount').val()}, 500);
+
+        $('#noti_Button').click(function () {
+
+            // TOGGLE (SHOW OR HIDE) NOTIFICATION WINDOW.
+            $('#notifications1').fadeToggle('fast', 'linear', function () {
+                if ($('#notifications1').is(':hidden')) {
+                    $('#noti_Button').css('background-color', '#FFF');
+                }
+                else $('#noti_Button').css('background-color', '#FFF');        // CHANGE BACKGROUND COLOR OF THE BUTTON.
+            });
+
+            $('#noti_Counter').fadeOut('slow');                 // HIDE THE COUNTER.
+
+            return false;
+        });
+
+        // HIDE NOTIFICATIONS WHEN CLICKED ANYWHERE ON THE PAGE.
+        $(document).click(function () {
+            $('#notifications1').hide();
+
+            // CHECK IF NOTIFICATION COUNTER IS HIDDEN.
+            if ($('#noti_Counter').is(':hidden')) {
+                // CHANGE BACKGROUND COLOR OF THE BUTTON.
+                $('#noti_Button').css('background-color', '#FFF');
+            }
+        });
+
+        $('#notifications1').click(function () {
+            return false;       // DO NOTHING WHEN CONTAINER IS CLICKED.
+        });
+
+
+
+
+        if(invitearray!=null){
+            for (var i = 0; i <invitearray.length; i++) {
+         
+                $('#areatoacceptinvitations').append('<strong>'+invitearray[i]+'</strong>'
+               + '&nbsp;&nbsp; <button class = "buttons1" name = "ltrContainer1" >'+'Zaakceptuj'+'</button>'+ '&nbsp;&nbsp; <button class = "buttons2" name = "ltrContainer2" >'+'Odrzuć'+'</button>'+'<br/>');
+            }
+        }
+        $('#areatoacceptinvitations').on('click', '.buttons1', function() {
+            // Do something on click on an existent or future .dynamicElement
+            //event.stopImmediatePropagation();
+            var myValue = $(this).prev().html();
+              
+            console.log("Email: " + myValue );
+            $.post('https://' + location.host + '/Friends/Friendinviteaccept', { email: myValue, model: invitearray, array: yourJavaScriptArray }, function(data){
+               
+                for (var i=invitearray.length-1; i>=0; i--) {
+                    if (invitearray[i] === myValue) {
+                        console.log("Email: " + myValue +" "+invitearray[i]);
+                        invitearray.splice(i, 1);
+                        // break;       //<-- Uncomment  if only the first term has to be removed
+                    }
+                }
+               
+                document.getElementById('areatoacceptinvitations').innerHTML = "";
+                    
+                for (var i = 0; i <invitearray.length; i++) {
+         
+                    $('#areatoacceptinvitations').append('<strong>'+invitearray[i]+'</strong>'
+                   + '&nbsp;&nbsp; <button class = "buttons1" name = "ltrContainer1" >'+'Zaakceptuj'+'</button>'+ '&nbsp;&nbsp; <button class = "buttons2" name = "ltrContainer2" >'+'Odrzuć'+'</button>'+'<br/>');
+                }
+              
+                alert('Zaproszenie od użytkownika '+myValue+' zostało zaakceptowane'); 
+            });
+
+           
+
+        });
+
+
+        $('#areatoacceptinvitations').on('click', '.buttons2', function() {
+            // Do something on click on an existent or future .dynamicElement
+            //event.stopImmediatePropagation();
+            var myValue = $(this).prev().prev().html();
+              
+            console.log("Email: " + myValue );
+            $.post('https://' + location.host + '/Friends/Friendrejected', { email: myValue, model: invitearray, array: yourJavaScriptArray }, function(data){
+               
+                for (var i=invitearray.length-1; i>=0; i--) {
+                    if (invitearray[i] === myValue) {
+                        console.log("Email: " + myValue +" "+invitearray[i]);
+                        invitearray.splice(i, 1);
+                        // break;       //<-- Uncomment  if only the first term has to be removed
+                    }
+                }
+               
+                document.getElementById('areatoacceptinvitations').innerHTML = "";
+                    
+                for (var i = 0; i <invitearray.length; i++) {
+         
+                    $('#areatoacceptinvitations').append('<strong>'+invitearray[i]+'</strong>'
+                   + '&nbsp;&nbsp; <button class = "buttons1" name = "ltrContainer1" >'+'Zaakceptuj'+'</button>'+ '&nbsp;&nbsp; <button class = "buttons2" name = "ltrContainer2" >'+'Odrzuć'+'</button>'+'<br/>');
+                }
+              
+                alert('Zaproszenie od użytkownika '+myValue+' zostało odrzucone'); 
+            });
+
+           
+
+        });
+
+
+
+
+    });
+
+        
 </script>
 }
 else

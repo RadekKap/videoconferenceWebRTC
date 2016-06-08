@@ -68,9 +68,6 @@ namespace conffandauthh.Controllers
             }
 
            
-
-
-
                 try
             {
                 // sprawdzanie URL, jeśli nie rzuci wyjątku to znaczy, że użytkownik wszedł do pokoju
@@ -141,7 +138,7 @@ namespace conffandauthh.Controllers
 
 
         [HttpPost]
-        public ActionResult Friendinviteaccept(string email,string[] model)
+        public ActionResult Friendinviteaccept(string email,string[] model, string view)
         {
             ApplicationDbContext dbcont = new ApplicationDbContext();
             
@@ -201,12 +198,15 @@ namespace conffandauthh.Controllers
             }
             br.tofriends = getFriends(user);
 
-            return View("../Home/Index", br);
+            if (view.Equals("contact"))
+                return View("../Home/Contact", br);
+            else
+                return View("../Home/Index", br);
         }
 
 
         [HttpPost]
-        public ActionResult Friendrejected(string email, string[] model)
+        public ActionResult Friendrejected(string email, string[] model,string view)
         {
             ApplicationDbContext dbcont = new ApplicationDbContext();
 
@@ -248,6 +248,9 @@ namespace conffandauthh.Controllers
             }
             br.tofriends = getFriends(user);
 
+            if(view.Equals("contact"))
+                return View("../Home/Contact", br);
+            else
             return View("../Home/Index", br);
         }
        
@@ -549,9 +552,61 @@ namespace conffandauthh.Controllers
 
         public ActionResult Contact()
         {
+            ApplicationDbContext dbcont = new ApplicationDbContext();
+
+            var allusers = dbcont.Users.ToArray();
+
+            BigSearchFriendModel model = new BigSearchFriendModel();
+
+            model.toinivitations = new SearchFriendModel();
+
+            ApplicationUser user = getUser();
+            try
+            {
+                ViewBag.Nick = user.Email.ToString();
+
+                using (var db = new conferenceEntities2())
+                {
+                    var find = from docs in db.Invitation where docs.secondUserId == user.Id select docs;
+
+                    var invitations = find.ToArray();
+
+
+
+                    if (invitations.Count() > 0)
+                    {
+                        ViewBag.mess = invitations.Count().ToString();
+
+                        model.toinivitations.ListFriends = new string[invitations.Count()];
+                        int licz = 0;
+                        foreach (var x in invitations)
+                        {
+                            foreach (var z in allusers)
+                            {
+                                if (z.Id.Equals(x.firstUserId))
+                                {
+                                    model.toinivitations.ListFriends.SetValue(z.Email, licz);
+                                    licz++;
+                                    break;
+                                }
+
+                            }
+
+                        }
+                    }
+                    else
+                        ViewBag.mess = null;
+
+                }
+            }
+            catch (Exception)
+            {
+
+            }
+
             ViewBag.Message = "Temat: Wideokonferncje";
 
-            return View();
+            return View(model);
         }
     }
 }
