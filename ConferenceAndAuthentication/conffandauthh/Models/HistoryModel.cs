@@ -8,10 +8,10 @@ namespace conffandauthh.Models
     public class HistoryModel
     {
 
-        public int messageId;
-        public int oldRoomId;
-        public string userId;
-        public string content;
-        public string roomname;
+        public int messageId{ get; set; }
+    public int oldRoomId{ get; set; }
+public string userId{ get; set; }
+        public string content{ get; set; }
+        public string roomname{ get; set; }
     }
 }
