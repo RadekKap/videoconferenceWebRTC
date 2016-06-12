@@ -53,7 +53,7 @@ Create table ChatHistory(
 	messageId int Primary Key Identity(1,1),
 	oldRoomId int references OldRooms(oldRoomId),
 	roomname nvarchar(30),
-	usernameNvarchar(30),
+	username Nvarchar(30),
 	userId nvarchar(128) references AspNetUsers(Id),
 	content nvarchar(255)
 );
