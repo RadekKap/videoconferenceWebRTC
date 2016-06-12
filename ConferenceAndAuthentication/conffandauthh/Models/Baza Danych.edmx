@@ -11,6 +11,8 @@
           </Key>
           <Property Name="messageId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="oldRoomId" Type="int" />
+          <Property Name="roomname" Type="nvarchar" MaxLength="30" />
+          <Property Name="username" Type="nvarchar" MaxLength="30" />
           <Property Name="userId" Type="nvarchar" MaxLength="128" />
           <Property Name="content" Type="nvarchar" MaxLength="255" />
         </EntityType>
@@ -73,7 +75,7 @@
           <Property Name="roomId" Type="int" Nullable="false" />
           <Property Name="userId" Type="nvarchar" MaxLength="128" Nullable="false" />
         </EntityType>
-        <Association Name="FK__ChatHisto__oldRo__51BA1E3A">
+        <Association Name="FK__ChatHisto__oldRo__30242045">
           <End Role="OldRooms" Type="Self.OldRooms" Multiplicity="0..1" />
           <End Role="ChatHistory" Type="Self.ChatHistory" Multiplicity="*" />
           <ReferentialConstraint>
@@ -85,7 +87,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__RoomsInvi__roomI__66B53B20">
+        <Association Name="FK__RoomsInvi__roomI__3D7E1B63">
           <End Role="Rooms" Type="Self.Rooms" Multiplicity="0..1" />
           <End Role="RoomsInvitations" Type="Self.RoomsInvitations" Multiplicity="*" />
           <ReferentialConstraint>
@@ -97,7 +99,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__UsersInOl__oldRo__4EDDB18F">
+        <Association Name="FK__UsersInOl__oldRo__2D47B39A">
           <End Role="OldRooms" Type="Self.OldRooms" Multiplicity="1" />
           <End Role="UsersInOldRoom" Type="Self.UsersInOldRoom" Multiplicity="*" />
           <ReferentialConstraint>
@@ -109,7 +111,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__UsersInRo__roomI__473C8FC7">
+        <Association Name="FK__UsersInRo__roomI__25A691D2">
           <End Role="Rooms" Type="Self.Rooms" Multiplicity="1" />
           <End Role="UsersInRoom" Type="Self.UsersInRoom" Multiplicity="*" />
           <ReferentialConstraint>
@@ -130,19 +132,19 @@
           <EntitySet Name="RoomsInvitations" EntityType="Self.RoomsInvitations" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="UsersInOldRoom" EntityType="Self.UsersInOldRoom" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="UsersInRoom" EntityType="Self.UsersInRoom" Schema="dbo" store:Type="Tables" />
-          <AssociationSet Name="FK__ChatHisto__oldRo__51BA1E3A" Association="Self.FK__ChatHisto__oldRo__51BA1E3A">
+          <AssociationSet Name="FK__ChatHisto__oldRo__30242045" Association="Self.FK__ChatHisto__oldRo__30242045">
             <End Role="OldRooms" EntitySet="OldRooms" />
             <End Role="ChatHistory" EntitySet="ChatHistory" />
           </AssociationSet>
-          <AssociationSet Name="FK__RoomsInvi__roomI__66B53B20" Association="Self.FK__RoomsInvi__roomI__66B53B20">
+          <AssociationSet Name="FK__RoomsInvi__roomI__3D7E1B63" Association="Self.FK__RoomsInvi__roomI__3D7E1B63">
             <End Role="Rooms" EntitySet="Rooms" />
             <End Role="RoomsInvitations" EntitySet="RoomsInvitations" />
           </AssociationSet>
-          <AssociationSet Name="FK__UsersInOl__oldRo__4EDDB18F" Association="Self.FK__UsersInOl__oldRo__4EDDB18F">
+          <AssociationSet Name="FK__UsersInOl__oldRo__2D47B39A" Association="Self.FK__UsersInOl__oldRo__2D47B39A">
             <End Role="OldRooms" EntitySet="OldRooms" />
             <End Role="UsersInOldRoom" EntitySet="UsersInOldRoom" />
           </AssociationSet>
-          <AssociationSet Name="FK__UsersInRo__roomI__473C8FC7" Association="Self.FK__UsersInRo__roomI__473C8FC7">
+          <AssociationSet Name="FK__UsersInRo__roomI__25A691D2" Association="Self.FK__UsersInRo__roomI__25A691D2">
             <End Role="Rooms" EntitySet="Rooms" />
             <End Role="UsersInRoom" EntitySet="UsersInRoom" />
           </AssociationSet>
@@ -160,6 +162,8 @@
           <Property Name="userId" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
           <Property Name="content" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="OldRooms" Relationship="Self.FK__ChatHisto__oldRo__59C55456" FromRole="ChatHistory" ToRole="OldRooms" />
+          <Property Name="roomname" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
+          <Property Name="username" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="OldRooms">
           <Key>
@@ -310,6 +314,8 @@
           <EntitySetMapping Name="ChatHistory">
             <EntityTypeMapping TypeName="conferenceModel.ChatHistory">
               <MappingFragment StoreEntitySet="ChatHistory">
+                <ScalarProperty Name="username" ColumnName="username" />
+                <ScalarProperty Name="roomname" ColumnName="roomname" />
                 <ScalarProperty Name="messageId" ColumnName="messageId" />
                 <ScalarProperty Name="oldRoomId" ColumnName="oldRoomId" />
                 <ScalarProperty Name="userId" ColumnName="userId" />

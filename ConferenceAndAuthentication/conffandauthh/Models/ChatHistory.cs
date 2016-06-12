@@ -16,10 +16,10 @@ namespace conffandauthh.Models
     {
         public int messageId { get; set; }
         public Nullable<int> oldRoomId { get; set; }
-        public string roomname { get; set; }
-        public string username { get; set; }
         public string userId { get; set; }
         public string content { get; set; }
+        public string roomname { get; set; }
+        public string username { get; set; }
     
         public virtual OldRooms OldRooms { get; set; }
     }
