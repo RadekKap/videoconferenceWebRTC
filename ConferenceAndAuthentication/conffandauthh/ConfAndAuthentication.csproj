@@ -253,6 +253,7 @@
     <Content Include="Models\Baza Danych.edmx.diagram">
       <DependentUpon>Baza Danych.edmx</DependentUpon>
     </Content>
+    <Content Include="ClassDiagram1.cd" />
     <None Include="Properties\PublishProfiles\conffandauthh - Web Deploy.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />

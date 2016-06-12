@@ -1,21 +1,27 @@
-﻿@model IEnumerable<conffandauthh.Models.ChatHistory>
+﻿@model IEnumerable < conffandauthh.Models.ChatHistory >
+
+    @using Microsoft.AspNet.Identity
+
 
 @{
-    ViewBag.Title = "Historia rozmów"
+    ViewBag.Title = "Historia rozmów";
 }
 
+@if (Request.IsAuthenticated)
+{
 <h2>historia rozmów</h2>
 
-<p>
-    @Html.ActionLink("Create New", "Create")
-</p>
+
 <table class="table">
     <tr>
         <th>
-            @Html.DisplayNameFor(model => model.userId)
+            Nazwa pokoju
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.content)
+           Nazwa użytkownika
+        </th>
+        <th>
+            Treść
         </th>
       
         <th></th>
@@ -24,7 +30,14 @@
 @foreach (var item in Model) {
     <tr>
         <td>
-            @Html.DisplayFor(modelItem => item.userId)
+            @Html.DisplayFor(modelItem => item.roomname)
+
+
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.username)
+        
+           
         </td>
         <td>
             @Html.DisplayFor(modelItem => item.content)
@@ -34,3 +47,15 @@
 }
 
 </table>
+
+}
+else
+{
+    <div class="jumbotron">
+        <h1>Wideo-Konferencje</h1>
+        <p class="lead">Aby korzystać z usług naszego serwisu musisz się zarejestrować lub zalogować na istniejące konto</p>
+        <p><a class="btn btn-default" href=@Url.Action("Register", "Account")>Rejestracja</a></p>
+        <p><a class="btn btn-default" href=@Url.Action("Login", "Account")>Zaloguj</a></p>
+    </div>
+}
+

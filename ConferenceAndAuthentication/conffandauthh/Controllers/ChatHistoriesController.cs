@@ -18,6 +18,7 @@ namespace conffandauthh.Controllers
         public ActionResult Index()
         {
             var chatHistory = db.ChatHistory.Include(c => c.OldRooms);
+            
             return View(chatHistory.ToList());
         }
 
