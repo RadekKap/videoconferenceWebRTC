@@ -67,16 +67,17 @@
         <div id="remotes"></div>
         <hr>
 
-        <div>
-            <textarea rows="4" cols="50" id="message"></textarea>
+        <div id="Showsend" style="display:none">
+            <textarea rows="4" cols="50" id="messageee"></textarea>
             <input type="button" id="sendmessage" value="Wyślij" />
-
-            <input type="hidden" id="displayname" value="@ViewBag.Nick" />
-            <input type="hidden" id="invitationscount" value="@ViewBag.mess" />
 
 
             <ul id="discussion"></ul>
+                     
+
         </div>
+        <input type="hidden" id="displayname" value="@ViewBag.Nick" />
+        <input type="hidden" id="invitationscount" value="@ViewBag.mess" />
         <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
         <script src="/Scripts/latest-v2.js"></script>
 
@@ -246,15 +247,15 @@
 
         $('#sendmessage').click(function () {
 
-            var d = $('#displayname').val() + "," + $('#message').val();
+            var d = $('#displayname').val() + "," + $('#messageee').val();
             webrtc.sendDirectlyToAll('hark', 'chat', d);
-            display($('#displayname').val(), $('#message').val());
-            var tresc = $('#message').val();
+            display($('#displayname').val(), $('#messageee').val());
+            var tresc = $('#messageee').val();
             room = location.search && location.search.split('?')[1];
             $.post('https://' + location.host + '/History/Add', { content: tresc, roomnamee: room });
 
             // Clear text box and reset focus for next comment.
-            $('#message').val('').focus();
+            $('#messageee').val('').focus();
         });
 
 
@@ -314,6 +315,9 @@
         // a peer video has been added
         webrtc.on('videoAdded', function (video, peer) {
             console.log('video added', peer);
+            document.getElementById('Showsend').style.display = 'block';
+            document.getElementById('discussion').style.display = 'block';
+
             var remotes = document.getElementById('remotes');
             if (remotes) {
                 var container = document.createElement('div');
@@ -412,6 +416,8 @@
         // czynności wykonywane podczas dołączania do pokoju
         function setRoom(name) {
             document.getElementById('createRoom').remove();
+            document.getElementById('Showsend').style.display = 'block';
+            document.getElementById('discussion').style.display = 'block';
 
             document.getElementById('title').innerText = 'Pokój: ' + name;
             document.getElementById('subTitle').innerText = 'Link do pokoju: ' + location.href;
@@ -467,6 +473,7 @@
                                 // tworzenie pokoju
                                 webrtc.createRoom(val, function (err, name) {
                                     console.log(' create room cb', arguments);
+
 
                                     var newUrl = location.pathname + '?' + name;
                                     if (!err) {
